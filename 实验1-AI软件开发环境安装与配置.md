@@ -13,9 +13,9 @@
 - 优先使用阿里云、腾讯云等平台提供的免费额度；没有可用额度时采用本地模型，并学会安全管理API密钥和本地模型配置。
 
 > **相关课程参考**
+>
 > - [CMU 15-113：Effective Coding with AI（2026）](https://www.csd.cs.cmu.edu/course/15113/s26)：参考其对AI编程助手、版本控制、质量验证和AI使用透明性的综合要求。
 > - [COMPSCI 1066：Build at the Speed of Thought（2026课程目录）](https://my.harvard.edu/course/COMPSCI1066/2026-Fall/001)：参考其比较不同AI模型和开发工具、理解AI做了什么与没有做什么的做法。
-
 
 ## 2. 实验内容
 
@@ -60,6 +60,26 @@
 - 按照2.1—2.6记录实际操作、使用的命令或界面、结果和必要判断，不能只写最终结论。
 - 截图、表格、日志和代码片段必须编号并配文字说明，禁止使用大段无解释截图代替分析。
 - 涉及仓库内容时给出文件路径和对应Commit，涉及账号、密钥或个人信息时必须遮挡或脱敏。
+
+### 2.1
+
+【操作系统】Windows 11 24H2（Build 26100.9168，EditionID: CoreCountrySpecific）
+【系统架构】AMD64（Intel64 Family 6 Model 183 Stepping 1）
+【CPU】     13th Gen Intel Core i9-13980HX，32 个逻辑处理器
+【GPU】     NVIDIA GeForce RTX 4060 Laptop GPU，显存 8188 MiB，驱动 596.21
+【内存】    16 GB
+
+| 工具    | 版本             | 安装位置                                         |
+| ------- | ---------------- | ------------------------------------------------ |
+| Python  | 3.13.0           | `C:\Python\python.exe`                         |
+| Node.js | v24.16.0         | `C:\Program Files\nodejs\node.exe`             |
+| npm     | 11.13.0          | `C:\Program Files\nodejs\npm.ps1`              |
+| pnpm    | 11.21.0          | `C:\Users\kirito\AppData\Roaming\npm\pnpm.ps1` |
+| Git     | 2.45.1.windows.1 | `C:\Program Files\Git\cmd\git.exe`             |
+| DSH     | 0.1.1-rc.2       | `C:\Users\kirito\AppData\Roaming\npm\dsh.ps1`  |
+| VS Code | 1.136.1          | `C:\Microsoft VS Code\bin\code.cmd`            |
+
+### 2.2
 
 ## 4. 实验小结
 

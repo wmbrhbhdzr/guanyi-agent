@@ -11,9 +11,8 @@
 | 日期 | 工具 | 任务 | 关键输入（摘要） | AI 建议摘要 | 是否采纳 | 人工修改 | 验证方式与结果 |
 |---|---|---|---|---|---|---|---|
 | 2026-09-11 | DSH | 生成项目骨架文件 | 项目为 Python 项目；含 API 密钥文件、日志目录、截图目录；后续可能下载本地模型 | 给出 Python 缓存、密钥、日志、模型文件四类忽略规则；生成 README、LICENSE、.env.example 骨架 | 采纳 | 补充分离"真值隔离""像素优先"两条设计约束；补充模型别名与计费说明 | 执行 `git status` 确认 `.env` 未被跟踪；执行 `git check-ignore -v .env` 命中忽略规则 → 通过 |
-|  |  |  |  |  |  |  |  |
-|  |  |  |  |  |  |  |  |
-|  |  |  |  |  |  |  |  |
+| 2026-09-11 | DSH | 解释项目结构并生成 README 草案 | 提示词见"二、工具对比"；在项目根目录执行 | 生成 8 节 README 草案；指出 `requirements.txt` 与 `.env.example` 被 README 引用但实际不存在；开篇标注"仓库中尚无任何可运行代码" | 部分采纳 | 未直接替换正式 README.md，保留为对比证据 | 逐条对照实际文件核对：两文件确不存在（`Test-Path` 验证为 False）；`实验1` 第 2.2—4 节确未完成 → 与输出一致 |
+| 2026-09-11 | Claude Code v2.1.153 | 同一提示词（解释项目结构并生成 README 草案） | 同上；模型 `deepseek-flash[1m]` | 生成 9 节 README 草案（含 ASCII 目录树）；同样指出两个文件缺失；将实验2 准确识别为"任务书"；但遗漏"已初步调研的现有方案"一节 | 部分采纳 | 同上 | 同上；结构完整但存在内容遗漏 → 与正式 README 对照后发现缺失小节 |
 
 ## 二、工具对比（实验1 §2.4）
 
@@ -29,17 +28,25 @@
 
 | 维度 | DSH | Claude Code（VS Code 扩展） |
 |---|---|---|
-| 版本 | 0.1.1-rc.2 | |
-| 认证方式 | | |
-| 可用入口 | | |
-| 完成度（任务是否做完） | | |
-| 正确性（有无编造或错误） | | |
-| 可解释性（能否说明理由） | | |
-| 使用成本（免费额度 / 时长） | | |
+| 版本 | 0.1.1-rc.2 | v2.1.153 |
+| 底层模型 | `deepseek-v4-flash-vision-exp`（据官方说明路由至 DeepSeek-V4.1-Flash） | `deepseek-flash[1m]`（同样路由至 DeepSeek-V4.1-Flash） |
+| 认证方式 | DeepSeek API Key（存于 `~/.dsh/.credentials.yaml`，不在仓库内） | DeepSeek API Key（经 Anthropic 兼容端点 `api.deepseek.com/anthropic`） |
+| 可用入口 | Web GUI（`127.0.0.1:3080`）／CLI（`dsh --profile headless`） | VS Code 扩展面板 |
+| 完成度（任务是否做完） | 高：8 节；含"仓库现有内容"清单表、环境实测数据、现有方案调研一节 | 中高：9 节；含 ASCII 目录树；**遗漏"已初步调研的现有方案"一节** |
+| 正确性（有无编造或错误） | 无编造。开篇声明"尚无任何可运行代码"；正确指出 `requirements.txt` 与 `.env.example` 被引用但不存在 | 无编造。声明"内容严格对应仓库现状"；同样指出两个文件缺失；将实验2 准确识别为"任务书" |
+| 事实核对深度 | 读出 LICENSE 版权署名为真实姓名；环境数据完整（含显卡驱动 596.21、显存 8188 MiB） | 环境数据较简（无驱动版本、无内存容量） |
+| 可解释性（能否说明理由） | 明确写出所遵循的规则："只描述已存在的文件和已确定的设计约束，尚未实现的功能一律标注为未实现" | 声明"内容严格对应仓库现状：当前尚无源代码" |
+| 使用成本（输出规模） | 3286 字节 / 60 行 | 2440 字节 / 59 行（比 DSH 少约 26%，即 DSH 多约 35%） |
 
-**结论**：主用工具 = ______　备用工具 = ______
+**结论**：主用工具 = **DSH**　备用工具 = **Claude Code（VS Code 扩展）**
 
 **理由**：
+
+1. **本对比已控制底层模型变量**。两种工具的调用名虽不同（`deepseek-v4-flash-vision-exp` 与 `deepseek-flash[1m]`），但据官方说明旧名称请求均由 **DeepSeek-V4.1-Flash** 提供服务，故本次差异主要来自**工具（harness）本身**的提示词设计、上下文管理与集成方式，而非模型能力差异。
+2. **信息完整度**：DSH 保留并延续了原 README 的"已初步调研的现有方案"一节，Claude Code 遗漏该节；DSH 额外通读了 LICENSE 与环境实测数据，事实核对更深。
+3. **事实核查能力两者均合格**：均发现 `requirements.txt` 与 `.env.example` 被 README 引用但实际不存在（经 `Test-Path` 验证确实不存在），且均未编造尚未实现的功能，说明提示词中"不要编造不存在的功能"这一约束对两者均有效。
+4. **成本与适用场景**：两者单价相同（同一模型），但 DSH 输出规模大 35%；在输出单价为输入未命中单价 4–8 倍的前提下，"更详尽"直接转化为更高的输出成本。Claude Code 更精简且与 IDE 深度集成，适合快速的局部修改与代码问答。
+5. **决定性因素**：本项目核心任务是**视觉决策闭环**，需要图像输入能力。DSH 使用的模型在配置中标注了 `inputModalities: text + image`，而 Claude Code 经 Anthropic 兼容端点使用的模型未标注图像模态。故 **DSH 作为主用工具**，Claude Code 作为**文本类任务的备用工具**。
 
 ## 三、关键配置问题记录（实验1 §2.2）
 
@@ -49,3 +56,4 @@
 | 2 | `git ls-remote https://github.com/git/git.git HEAD` 报错 `Failed to connect to github.com port 443 after 21043 ms: Couldn't connect to server` | 代理客户端处于"智能分流"模式，该模式下 github.com 的流量未被正确接管 | 切换代理模式后重试 | 切换到"全局代理"后仍失败：`Recv failure: Connection was reset` |
 | 3 | 切换"全局代理"后仍报 `Recv failure: Connection was reset` | 全局代理模式下连接被重置，未成功建立会话 | 改为"智能分流 + 增强模式"后重试 | 成功返回 HEAD 引用 `fa7f9290efe2bd22dd736689597b474b93798e11` → 通过 |
 | 4 | 执行 `git init` 时，输出中的仓库路径显示为乱码 `C:/Code/杞欢搴旂敤寮€鍙戝疄璺?.git/`，并伴随报错 `fatal: unknown write failure on standard output` | 当前控制台活动代码页为 **936（GBK）**，而 Git for Windows 以 **UTF-8** 输出含中文的路径；控制台无法正确解码，导致写入标准输出失败。经核验仓库实际已成功创建（`.git/HEAD` 内容为 `ref: refs/heads/main`，`git status` 可正常列出文件），该报错不影响仓库有效性，仅为输出编码问题 | 将控制台切换为 UTF-8：执行 `chcp 65001` 并设置 `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8`；同时设置 `git config --global i18n.logOutputEncoding utf-8`；为长期生效，将该设置写入 PowerShell `$PROFILE`；后续统一使用 VS Code 集成终端 | 重新执行 `git status`，中文路径与中文文件名均正确显示，无报错 → 通过 |
+| 5 | `.env.example` 在本地丢失，而 `README.md` 的"快速开始"一节引用了该文件（`Copy-Item .env.example .env`），造成文档与实际文件不一致（该不一致由两个 AI 工具在阅读项目时同时指出） | 疑似在 VS Code 中将 `.env.example` 直接重命名为 `.env`，原模板文件随之被移除。由于 `.env` 被 `.gitignore` 忽略，该问题不会出现在 `git status` 输出或提交历史中，难以通过版本控制察觉 | 重新创建 `.env.example`（仅含占位符、不含真实密钥），保留 `.env` 作为本地真实配置；`.gitignore` 中保留 `!.env.example` 例外规则，使模板可正常入库 | 执行 `git check-ignore -v .env.example`，输出 `.gitignore:14:!.env.example`，确认该文件未被忽略、可提交；同时 `git status` 中 `.env` 始终不出现，确认密钥文件被正确忽略 → 通过 |
