@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # 直接依赖清单
 # 说明：以下为项目直接使用的库。完整锁定版本可用 `pip freeze > requirements.lock.txt` 生成。
 
