@@ -38,9 +38,10 @@ PRICE = {
     "output":       {"offpeak": 4.0,  "peak": 8.0},
 }
 
-# 空闲时段定义（北京时间）。DeepSeek 的优惠时段为 00:30–08:30，请以官方最新公告为准。
-OFFPEAK_START = (0, 30)
-OFFPEAK_END = (8, 30)
+# 计费时段定义（北京时间），以官方最新公告为准：
+#   高峰时段：周一至周五 09:00–12:00、14:00–18:00
+#   其余时间（含周末全天）均为空闲时段，单价为高峰时段的一半。
+PEAK_WINDOWS = ((9 * 60, 12 * 60), (14 * 60, 18 * 60))
 
 MODEL = os.environ.get("MODEL_NAME", "deepseek-flash")
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -67,9 +68,16 @@ def load_dotenv(path):
 
 
 def is_offpeak(now=None):
+    """判断当前是否适用空闲价。
+
+    官方定义：高峰时段为周一至周五 09:00–12:00 与 14:00–18:00（北京时间），
+    其余时间（含周末全天）均为空闲时段，单价为高峰时段的一半。
+    """
     now = now or datetime.now()
-    cur = (now.hour, now.minute)
-    return OFFPEAK_START <= cur < OFFPEAK_END
+    if now.weekday() >= 5:      # 5 = 周六, 6 = 周日：全天空闲
+        return True
+    cur = now.hour * 60 + now.minute
+    return not any(start <= cur < end for start, end in PEAK_WINDOWS)
 
 
 def make_test_image(path):
@@ -99,7 +107,7 @@ def capture_screen(path):
     """尝试截屏；不可用时返回 None。"""
     try:
         import mss
-        with mss.mss() as sct:
+        with mss.MSS() as sct:
             shot = sct.grab(sct.monitors[1])
             from PIL import Image
             Image.frombytes("RGB", shot.size, shot.bgra, "raw", "BGRX").save(path, "PNG")
@@ -138,7 +146,9 @@ def call_api(base_url, api_key, model, prompt, data_uri, timeout=120):
                 {"type": "image_url", "image_url": {"url": data_uri}},
             ],
         }],
-        "max_tokens": 400,
+        # 注意：max_tokens 限制的是输出总 token（含推理 token）。
+        # 取值过小会导致推理占满预算，正式答案被截断甚至为空（HTTP 仍返回 200）。
+        "max_tokens": 1500,
         "stream": False,
     }
     req = urllib.request.Request(
@@ -214,7 +224,9 @@ def main():
     print("=" * 68)
     print("视觉 API 冒烟测试")
     print("=" * 68)
-    print(f"  请求时间      : {datetime.now():%Y-%m-%d %H:%M:%S}  ({'空闲时段' if offpeak else '高峰时段'})")
+    weekday_cn = "一二三四五六日"[datetime.now().weekday()]
+    print(f"  请求时间      : {datetime.now():%Y-%m-%d %H:%M:%S}  周{weekday_cn}  "
+          f"({'空闲时段' if offpeak else '高峰时段'})")
     print(f"  模型调用名    : {MODEL}")
     print(f"  接口地址      : {base_url}/chat/completions")
     print(f"  请求类型      : 多模态 chat completion（文本 + 图片）")
@@ -238,15 +250,22 @@ def main():
     except Exception:
         text = json.dumps(body, ensure_ascii=False)[:800]
 
+    finish_reason = (body.get("choices") or [{}])[0].get("finish_reason") or "(未提供)"
+
     usage = body.get("usage") or {}
     cost = compute_cost(usage, offpeak)
 
     print("【模型返回】")
-    print(text.strip())
+    print(text.strip() if text.strip() else "(空)")
     print("-" * 68)
+    if not text.strip():
+        print("[警告] 模型返回内容为空。请检查 max_tokens 是否被推理 token 占满。")
+    if finish_reason == "length":
+        print("[警告] 返回被 max_tokens 截断（finish_reason=length），答案不完整。")
     print("【耗时与用量】")
     print(f"  端到端时延    : {elapsed_ms:.0f} ms")
     print(f"  返回模型      : {body.get('model', '(未提供)')}")
+    print(f"  结束原因      : {finish_reason}")
     print(f"  输入 token    : {usage.get('prompt_tokens', '(未提供)')}"
           f"   其中缓存命中 {cost['input_cached_tokens']} / 未命中 {cost['input_miss_tokens']}")
     print(f"  输出 token    : {cost['output_tokens']}")
@@ -257,6 +276,7 @@ def main():
     print(f"  输入（未命中）  : {cost['input_miss_tokens']:>7} × {PRICE['input_miss'][cost['tier']]:>5} = {cost['cost_input_miss_yuan']:.8f} 元")
     print(f"  输出            : {cost['output_tokens']:>7} × {PRICE['output'][cost['tier']]:>5} = {cost['cost_output_yuan']:.8f} 元")
     print(f"  本次合计        : {cost['cost_total_yuan']:.6f} 元")
+    print("  说明：以上为按单价折算值，实际扣费以服务端账单为准。")
     print("=" * 68)
 
     runs_dir = os.path.join(PROJECT_ROOT, "runs")
@@ -265,6 +285,7 @@ def main():
         "timestamp": datetime.now().isoformat(timespec="seconds"),
         "model_requested": MODEL,
         "model_returned": body.get("model"),
+        "finish_reason": finish_reason,
         "endpoint": base_url + "/chat/completions",
         "request_type": "multimodal chat completion (text + image)",
         "image": {"file": os.path.basename(img_path), "width": size[0], "height": size[1], "bytes": raw_bytes},
