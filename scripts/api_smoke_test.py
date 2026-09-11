@@ -205,13 +205,30 @@ def main():
     img_path = sys.argv[1] if len(sys.argv) > 1 else None
     prompt = sys.argv[2] if len(sys.argv) > 2 else DEFAULT_PROMPT
 
+    img_source = "命令行指定文件"
     if img_path is None:
         img_path = os.path.join(PROJECT_ROOT, "runs", "smoke_input.png")
         os.makedirs(os.path.dirname(img_path), exist_ok=True)
-        img_path = capture_screen(img_path) or make_test_image(img_path)
-        if img_path is None:
-            print("[错误] 无法截屏，也未能生成测试图片（缺少 Pillow）。")
-            return 2
+        if capture_screen(img_path) is not None:
+            img_source = "实时截屏"
+        else:
+            # 注意：此处不做静默回退。截屏失败会让输入变成自制测试图，
+            # 其 token 用量与真实截图差别很大，必须显式告警以免误判。
+            img_source = "自制测试图（截屏失败回退）"
+            print("[警告] 屏幕采集失败（mss 与 pyautogui 均不可用），已回退为自制测试图。")
+            print(f"       当前解释器  ：{sys.executable}")
+            print(f"       是否虚拟环境：{'是' if sys.prefix != sys.base_prefix else '否'}")
+            if sys.prefix == sys.base_prefix:
+                print("       [原因] 当前未在虚拟环境中运行，而 mss / pyautogui 只安装在 .venv 中；")
+                print("              requests 与 Pillow 全局可用，故接口调用与图像生成仍会成功，")
+                print("              仅屏幕采集静默失败——容易被误认为脚本正常。")
+                print("       [处理] 先激活虚拟环境：.\\.venv\\Scripts\\Activate.ps1")
+                print("              或直接使用：.\\.venv\\Scripts\\python.exe scripts\\api_smoke_test.py")
+            print("       该图的 token 用量与真实截图差异较大，结果不应与真实截图直接比较。")
+            print("       也可显式指定图片路径：python scripts\\api_smoke_test.py 你的截图.png")
+            if make_test_image(img_path) is None:
+                print("[错误] 无法生成测试图片（缺少 Pillow）。")
+                return 2
         print(f"[信息] 自动准备图片：{img_path}")
 
     if not os.path.exists(img_path):
@@ -231,6 +248,7 @@ def main():
     print(f"  接口地址      : {base_url}/chat/completions")
     print(f"  请求类型      : 多模态 chat completion（文本 + 图片）")
     print(f"  输入图片      : {os.path.basename(img_path)}  {size[0]}x{size[1]}  {raw_bytes/1024:.1f} KB")
+    print(f"  图片来源      : {img_source}")
     print(f"  密钥来源      : .env / 环境变量（长度 {len(api_key)}，不显示内容）")
     print("-" * 68)
 
@@ -288,7 +306,8 @@ def main():
         "finish_reason": finish_reason,
         "endpoint": base_url + "/chat/completions",
         "request_type": "multimodal chat completion (text + image)",
-        "image": {"file": os.path.basename(img_path), "width": size[0], "height": size[1], "bytes": raw_bytes},
+        "image": {"file": os.path.basename(img_path), "source": img_source,
+                  "width": size[0], "height": size[1], "bytes": raw_bytes},
         "prompt": prompt,
         "response_text": text,
         "latency_ms": round(elapsed_ms, 1),
