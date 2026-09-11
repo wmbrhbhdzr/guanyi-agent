@@ -70,6 +70,20 @@ Copy-Item .env.example .env
 `deepseek-v4-flash` / `deepseek-v4-flash-vision-exp` 为别名，
 实际由 DeepSeek-V4.1-Flash 提供服务，按 Flash 价格计费。
 
+## 项目状态
+
+| 阶段 | 内容 | 状态 |
+|---|---|---|
+| 实验1 | AI 软件开发环境安装与配置 | 进行中 |
+| 需求分析 | 个人软件选题与需求说明 V1 | 未开始 |
+
+## 已初步调研的现有方案
+
+- **Cradle**：以截图作为输入、键鼠作为输出的通用计算机控制框架
+- **ScreenAgent / UI-TARS**：规划—执行—反思式的 GUI 智能体
+- **CommunicationMod**：杀戮尖塔的外部进程控制协议
+  （仅用于离线评测与合法性校验，**不进入模型上下文**，以保持方案通用性）
+
 ## 许可
 
 本项目采用 MIT License，详见 [LICENSE](LICENSE)。
