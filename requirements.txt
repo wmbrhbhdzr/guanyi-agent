@@ -1,0 +1,18 @@
+# 直接依赖清单
+# 说明：以下为项目直接使用的库。完整锁定版本可用 `pip freeze > requirements.lock.txt` 生成。
+
+# 模型服务调用
+requests>=2.32.0
+
+# 密钥与配置管理
+python-dotenv>=1.0.0
+
+# 屏幕采集（截图）
+mss>=9.0.1
+Pillow>=10.0.0
+
+# 键鼠动作注入
+pyautogui>=0.9.54
+
+# 数值与数据处理
+numpy>=1.26.0
