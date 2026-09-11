@@ -1,0 +1,50 @@
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+
+# ---------- 密钥与敏感配置（严禁提交）----------
+.env
+.env.*
+!.env.example
+secrets/
+*.key
+*.pem
+credentials.json
+
+# ---------- 运行产物与日志 ----------
+logs/
+captures/
+runs/
+outputs/
+*.log
+
+# ---------- 模型文件（体积大，不入库）----------
+models/
+*.gguf
+*.safetensors
+*.onnx
+*.pt
+*.pth
+
+# ---------- 数据集与录像（体积大，不入库）----------
+data/
+datasets/
+recordings/
+*.mp4
+*.mkv
+
+# ---------- 编辑器与 IDE ----------
+.vscode/
+.idea/
+*.swp
+
+# ---------- 操作系统 ----------
+Thumbs.db
+Desktop.ini
+.DS_Store
