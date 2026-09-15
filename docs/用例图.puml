@@ -1,0 +1,110 @@
+@startuml 观弈用例图
+' ============================================================
+' 观弈（GuanYi）用例图 v2 —— 实验2 报告 3.4.3 节「图 6」的**等价源码（备用方案）**
+'
+' 注意：报告中的正式图 6 由 **StarUML** 按 UML 用例图绘制并导出 PNG；
+'       本文件是同一模型的 PlantUML 等价实现，仅作备用绘制方案与源码留档。
+'       两者已逐条核对一致：参与者关联 10 条 + include 5 条 + extend 2 条 = 17 条边。
+'
+' v2 相对 v1 的改动（解决"参与者全挤在左侧、线条杂乱"）：
+'   1. 右侧的参与者改用反向箭头「<--」，让 PlantUML 把它们排到右边；
+'   2. 参与者连线共 10 条（玩家 5、开发者 2、真值通道 2、模型服务 1）——记录点、失败恢复改由其它用例通过
+'      <<include>> / <<extend>> 引出，不再各自单拉一条线；
+'   3. 删除两个浮动 note（默认档位等说明已写在报告的图注里，且 note 在复杂
+'      布局中会乱飘并压住连线）。
+'   若自动布局仍显杂乱，建议改用 StarUML / ProcessOn / draw.io 手绘（见文件末尾布局建议）。
+'
+' 渲染：打开 https://www.plantuml.com/plantuml，清空左侧后粘贴本文件全部内容，
+'       右侧出图 → 右上角下载 PNG/SVG。
+' ============================================================
+
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam nodesep 18
+skinparam ranksep 45
+
+skinparam actor {
+  BackgroundColor #FFFFFF
+  BorderColor #666666
+}
+skinparam usecase {
+  BackgroundColor #E6E6FA
+  BorderColor #888888
+  FontSize 13
+}
+skinparam rectangle {
+  BackgroundColor #F7F7F7
+  BorderColor #AAAAAA
+}
+
+' ---------- 左侧：主用户 ----------
+actor "玩家\n（主用户）" as Player
+
+' ---------- 系统边界内的用例 ----------
+rectangle "观弈系统" {
+  usecase "UC-01\n采集游戏画面" as UC01
+  usecase "UC-02\n生成决策建议" as UC02
+  usecase "UC-03\n动作合法性校验" as UC03
+  usecase "UC-04\n记录决策点" as UC04
+  usecase "UC-05A\n自动执行器（可插拔）" as UC05A
+  usecase "UC-05B\n自动化接口" as UC05B
+  usecase "UC-05C\n玩家练习模式自动执行" as UC05C
+  usecase "UC-06\n生成复盘报告" as UC06
+  usecase "UC-07\n失败恢复" as UC07
+  usecase "UC-08\n批量评测" as UC08
+  usecase "UC-09\n提示强度设置" as UC09
+}
+
+' ---------- 右侧：次要用户与外部服务（反向箭头，强制排在右侧）----------
+actor "开发者\n（次要用户）" as Dev
+actor "模型服务\n（云端 VLM）" as LLM
+actor "游戏真值通道\n（仅用于评测）" as Truth
+
+' ---------- 玩家 → 用例（5 条）----------
+Player --> UC01
+Player --> UC02
+Player --> UC05C
+Player --> UC06
+Player --> UC09
+
+' ---------- 右侧参与者 → 用例（5 条）----------
+UC05B <-- Dev
+UC08  <-- Dev
+UC02  <-- LLM
+UC08  <-- Truth
+UC03  <-- Truth
+
+' ---------- 用例之间的关系（7 条，全部在边界内部）----------
+UC02 ..> UC03 : <<include>>
+UC02 ..> UC04 : <<include>>
+UC07 ..> UC05A : <<extend>>\n{if 动作未生效}
+UC08 ..> UC05A : <<include>>
+UC05C ..> UC05A : <<include>>
+UC05B ..> UC05C : <<include>>
+UC09 ..> UC02 : <<extend>>\n{if 档位为逐决策点建议}
+
+@enduml
+
+' ============================================================
+' 若自动布局仍不满意，用 StarUML / ProcessOn / draw.io 手绘最保险
+' （报告中的正式图 6 即用 StarUML 绘制）。建议布局：
+'
+'   左列参与者（自上而下）：
+'     玩家（主用户）        → 连 UC-01、UC-02、UC-06、UC-09、UC-05C
+'     开发者（次要用户）    → 连 UC-05B、UC-08
+'     游戏真值通道（仅评测）→ 连 UC-03、UC-08
+'
+'   中间「观弈系统」方框内分三列摆放：
+'     左列（面向玩家）：UC-01 采集游戏画面 / UC-02 生成决策建议
+'                       UC-09 提示强度设置 / UC-06 生成复盘报告
+'     中列（内部支撑）：UC-03 动作合法性校验 / UC-04 记录决策点
+'                       UC-05C 玩家练习模式自动执行 / UC-07 失败恢复
+'     右列（面向开发）：UC-05B 自动化接口 / UC-08 批量评测
+'                       UC-05A 自动执行器（可插拔）
+'
+'   右列参与者：模型服务（云端 VLM） → 连 UC-02
+'
+'   连线尽量水平或直角，避免跨越整个图面；
+'   用例之间用虚线 + <<include>> / <<extend>> 标注。
+' ============================================================
