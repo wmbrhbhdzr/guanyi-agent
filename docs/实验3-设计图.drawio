@@ -1,0 +1,162 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="第 1 页" id="nZ_BtmsXTndsKrArJe5x">
+    <mxGraphModel dx="994" dy="611" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-17" edge="1" parent="1" source="3i1b_a_OFdE2mmqqoJr3-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="3i1b_a_OFdE2mmqqoJr3-3" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="449.33" y="225.11" />
+              <mxPoint x="449.33" y="225.11" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-18" connectable="0" parent="3i1b_a_OFdE2mmqqoJr3-17" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=default;fontColor=default;fontSize=14;" value="开始对局" vertex="1">
+          <mxGeometry relative="1" x="-0.3252" as="geometry">
+            <mxPoint x="32" y="5" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-20" edge="1" parent="1" source="3i1b_a_OFdE2mmqqoJr3-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;" target="3i1b_a_OFdE2mmqqoJr3-2" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="197" y="161.25" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-21" connectable="0" parent="3i1b_a_OFdE2mmqqoJr3-20" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;" value="设置 / 保存并返回" vertex="1">
+          <mxGeometry relative="1" x="0.1873" y="3" as="geometry">
+            <mxPoint x="65" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-26" edge="1" parent="1" source="3i1b_a_OFdE2mmqqoJr3-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="3i1b_a_OFdE2mmqqoJr3-4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="447.08" y="94" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-29" edge="1" parent="1" source="3i1b_a_OFdE2mmqqoJr3-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="3i1b_a_OFdE2mmqqoJr3-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;imageWidth=24;fillColor=#dae8fc;strokeColor=#6c8ebf;labelBorderColor=none;labelBackgroundColor=none;fontColor=default;" value="&lt;span style=&quot;font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;JetBrains Mono&amp;quot;, &amp;quot;Fira Code&amp;quot;, Consolas, &amp;quot;Liberation Mono&amp;quot;, Menlo, Courier, &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;; font-size: 13.125px; text-align: start;&quot;&gt;首页（入口）&lt;/span&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="349" y="128" as="geometry" />
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-24" edge="1" parent="1" source="3i1b_a_OFdE2mmqqoJr3-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="3i1b_a_OFdE2mmqqoJr3-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="197" y="161.25" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;span style=&quot;font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;JetBrains Mono&amp;quot;, &amp;quot;Fira Code&amp;quot;, Consolas, &amp;quot;Liberation Mono&amp;quot;, Menlo, Courier, &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;; font-size: 13.125px; text-align: start; color: rgb(0, 0, 0);&quot;&gt;设置页&lt;/span&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="137" y="256" as="geometry" />
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-32" edge="1" parent="1" source="3i1b_a_OFdE2mmqqoJr3-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="3i1b_a_OFdE2mmqqoJr3-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-33" connectable="0" parent="3i1b_a_OFdE2mmqqoJr3-32" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;" value="战斗结束（自动跳转）" vertex="1">
+          <mxGeometry relative="1" x="-0.02" y="-1" as="geometry">
+            <mxPoint x="-1" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-34" edge="1" parent="1" source="3i1b_a_OFdE2mmqqoJr3-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="3i1b_a_OFdE2mmqqoJr3-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="414.33" y="216.22" />
+              <mxPoint x="414.33" y="216.22" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-35" connectable="0" parent="3i1b_a_OFdE2mmqqoJr3-34" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;" value="结束本局（需确认）" vertex="1">
+          <mxGeometry relative="1" x="0.1127" y="1" as="geometry">
+            <mxPoint x="-65" y="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-38" edge="1" parent="1" source="3i1b_a_OFdE2mmqqoJr3-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="3i1b_a_OFdE2mmqqoJr3-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="449.33" y="347.33" />
+              <mxPoint x="449.33" y="347.33" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-39" connectable="0" parent="3i1b_a_OFdE2mmqqoJr3-38" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;" value="切到仅复盘档" vertex="1">
+          <mxGeometry relative="1" x="-0.0208" as="geometry">
+            <mxPoint x="47" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;labelBackgroundColor=none;" value="&lt;span style=&quot;font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;JetBrains Mono&amp;quot;, &amp;quot;Fira Code&amp;quot;, Consolas, &amp;quot;Liberation Mono&amp;quot;, Menlo, Courier, &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;; font-size: 13.125px; text-align: start; color: rgb(0, 0, 0);&quot;&gt;核心任务页&lt;/span&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="349" y="256" as="geometry" />
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=#d0cee2;strokeColor=#56517e;" value="&lt;span style=&quot;font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;JetBrains Mono&amp;quot;, &amp;quot;Fira Code&amp;quot;, Consolas, &amp;quot;Liberation Mono&amp;quot;, Menlo, Courier, &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;; font-size: 13.125px; text-align: start;&quot;&gt;评测页（开发者）&lt;/span&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="630" y="64" as="geometry" />
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-40" edge="1" parent="1" source="3i1b_a_OFdE2mmqqoJr3-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="3i1b_a_OFdE2mmqqoJr3-3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="424.33" y="349.56" />
+              <mxPoint x="424.33" y="349.56" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-41" connectable="0" parent="3i1b_a_OFdE2mmqqoJr3-40" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;" value="展开建议卡" vertex="1">
+          <mxGeometry relative="1" x="-0.0833" y="-1" as="geometry">
+            <mxPoint x="-42" y="-3" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontColor=default;dashed=1;" value="&lt;span style=&quot;font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;JetBrains Mono&amp;quot;, &amp;quot;Fira Code&amp;quot;, Consolas, &amp;quot;Liberation Mono&amp;quot;, Menlo, Courier, &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;; font-size: 13.125px; text-align: start;&quot;&gt;悬浮条&lt;/span&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="349" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-30" edge="1" parent="1" source="3i1b_a_OFdE2mmqqoJr3-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="3i1b_a_OFdE2mmqqoJr3-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="690" y="158" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-31" connectable="0" parent="3i1b_a_OFdE2mmqqoJr3-30" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;" value="打开最近复盘 / 返回" vertex="1">
+          <mxGeometry relative="1" x="-0.1737" y="1" as="geometry">
+            <mxPoint x="-91" y="-13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;labelBackgroundColor=none;" value="&lt;span style=&quot;font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;JetBrains Mono&amp;quot;, &amp;quot;Fira Code&amp;quot;, Consolas, &amp;quot;Liberation Mono&amp;quot;, Menlo, Courier, &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;; font-size: 13.125px; text-align: start;&quot;&gt;复盘报告页&lt;/span&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="630" y="256" as="geometry" />
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=#fad7ac;strokeColor=#b46504;dashed=1;" value="&lt;span style=&quot;font-family: &amp;quot;SF Mono&amp;quot;, &amp;quot;JetBrains Mono&amp;quot;, &amp;quot;Fira Code&amp;quot;, Consolas, &amp;quot;Liberation Mono&amp;quot;, Menlo, Courier, &amp;quot;PingFang SC&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;; font-size: 13.125px; text-align: start;&quot;&gt;全局模态提示&lt;/span&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="137" y="382" as="geometry" />
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-10" edge="1" parent="1" source="3i1b_a_OFdE2mmqqoJr3-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;textDirection=ltr;" target="3i1b_a_OFdE2mmqqoJr3-1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-12" connectable="0" parent="3i1b_a_OFdE2mmqqoJr3-10" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];textDirection=ltr;fontSize=14;" value="启动" vertex="1">
+          <mxGeometry relative="1" x="0.0744" y="1" as="geometry">
+            <mxPoint x="-10" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-9" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;aspect=fixed;fillColor=#000000;" value="" vertex="1">
+          <mxGeometry height="41" width="41" x="388.5" y="38" as="geometry" />
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-27" edge="1" parent="1" source="3i1b_a_OFdE2mmqqoJr3-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.818;entryY=0.035;entryDx=0;entryDy=0;entryPerimeter=0;" target="3i1b_a_OFdE2mmqqoJr3-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-28" connectable="0" parent="3i1b_a_OFdE2mmqqoJr3-27" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;" value="开发者模式 / 返回" vertex="1">
+          <mxGeometry relative="1" x="-0.2097" y="1" as="geometry">
+            <mxPoint x="6" y="-13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-43" edge="1" parent="1" source="3i1b_a_OFdE2mmqqoJr3-3" style="endArrow=classic;html=1;rounded=0;dashed=1;dashPattern=1 2;" target="3i1b_a_OFdE2mmqqoJr3-7" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="292.67" y="460.67" as="sourcePoint" />
+            <mxPoint x="313.78" y="555" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3i1b_a_OFdE2mmqqoJr3-44" connectable="0" parent="3i1b_a_OFdE2mmqqoJr3-43" style="edgeLabel;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;" value="低置信／冲突／注入失败" vertex="1">
+          <mxGeometry relative="1" x="-0.0405" y="-1" as="geometry">
+            <mxPoint x="-74" y="11" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
