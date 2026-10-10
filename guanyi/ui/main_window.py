@@ -17,6 +17,7 @@
 import os
 import sys
 import tkinter as tk
+from pathlib import Path
 from tkinter import messagebox, ttk
 
 
@@ -69,6 +70,7 @@ class GuanyiApp(tk.Tk):
         self._build_pages()
         self._build_statusbar()
         self.refresh_runs()
+        self.refresh_summary()          # 打开就有摘要，不用先点按钮
         self.protocol("WM_DELETE_WINDOW", self.destroy)
 
     # ---------------- 顶部工具条 ----------------
@@ -127,6 +129,12 @@ class GuanyiApp(tk.Tk):
             self.hand_box.insert("end", card)
         self.hand_box.grid(row=6, column=1, sticky="w", pady=(8, 3))
         self.hand_box.selection_set(0, 1)
+
+        # 输入一改就刷新摘要：避免“摘要”与真实输入自相矛盾（测试发现的缺陷）
+        for entry in self.entries.values():
+            entry.bind("<KeyRelease>", lambda _e: self.refresh_summary())
+            entry.bind("<FocusOut>", lambda _e: self.refresh_summary())
+        self.hand_box.bind("<<ListboxSelect>>", lambda _e: self.refresh_summary())
 
         ttk.Label(left, text="局面摘要（由上面的数字自动生成，避免与实际输入不一致）").grid(
             row=7, column=0, columnspan=2, sticky="w", pady=(10, 3))
@@ -231,6 +239,7 @@ class GuanyiApp(tk.Tk):
         self.refresh_list()
 
     def on_select_run(self):
+        self.refresh_summary()
         self.refresh_list()
         self.status_var.set("切换到对局 %s" % self.run_var.get())
 
@@ -261,15 +270,25 @@ class GuanyiApp(tk.Tk):
                 % (state["hp"], state["max_hp"], state["energy"], state["enemy_hp"],
                    state["enemy_intent"], "／".join(state["hand"]) or "空"))
 
-    def on_fill_summary(self):
+    def refresh_summary(self, silent=True):
+        """把摘要刷成与当前输入一致。
+
+        `silent=True` 用于输入过程中的自动刷新：数字还没填完时静默跳过，
+        不弹提示框（否则每按一个键都可能弹窗）。
+        """
         try:
             state = self.read_state()
         except ValueError as exc:
+            if silent:
+                return
             return self._fail(GuanyiError("血量、能量、意图等必须是整数：%s" % exc))
         self.state_entry.configure(state="normal")
         self.state_entry.delete(0, "end")
         self.state_entry.insert(0, self.build_summary(state))
         self.state_entry.configure(state="readonly")
+
+    def on_fill_summary(self):
+        self.refresh_summary(silent=False)
 
     def on_suggest(self):
         try:
@@ -321,6 +340,7 @@ class GuanyiApp(tk.Tk):
                                action_key(point.player_action), "是" if point.is_consistent else "否", warn))
         self.entries["turn"].delete(0, "end")
         self.entries["turn"].insert(0, str(point.turn + 1))
+        self.refresh_summary()
         self.refresh_list()
 
     def refresh_list(self):
@@ -352,7 +372,9 @@ class GuanyiApp(tk.Tk):
         try:
             run_id = self.current_run()
             result = self.service.build_report(run_id)
-            text = open(result["path"], encoding="utf-8").read()
+            text = Path(result["path"]).read_text(encoding="utf-8")   # 用上下文管理，避免句柄泄漏
+        except OSError as exc:
+            return self._fail(GuanyiError("读取报告文件失败：%s" % exc))
         except Exception as exc:                       # noqa: BLE001
             return self._fail(exc)
         self.report_text.delete("1.0", "end")

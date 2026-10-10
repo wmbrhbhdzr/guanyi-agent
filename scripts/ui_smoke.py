@@ -38,6 +38,7 @@ def main():
     service = SessionService(JsonlStore(os.path.join(ROOT, "runs")))
     app = GuanyiApp(service)
     app.update()
+    print("⓪ 启动时的局面摘要（应自动生成，不为空）：%s" % (app.state_entry.get() or "（空！）"))
 
     app.on_new_run()
     app.update()
@@ -60,6 +61,9 @@ def main():
     # 第二笔：把敌人意图调高，让基线的保血分支生效；玩家却打出攻击 → 不一致
     app.entries["enemy_intent"].delete(0, "end")
     app.entries["enemy_intent"].insert(0, "30")
+    app.refresh_summary()
+    app.update()
+    print("④b 改数字后摘要自动刷新：%s" % app.state_entry.get())
     app.play_card.set("打击")
     app.on_record(use_suggestion=False)
     app.update()
