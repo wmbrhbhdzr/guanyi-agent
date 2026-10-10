@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
 """领域数据结构（对应实验3 图 5 的核心数据模型）。
 
-实验4 只实现非AI 闭环需要的最小集：Run、DecisionPoint、Report。
-`Action` 与 `GuardrailVerdict` 在这一版里用 dict 表示（值对象，内嵌于 DecisionPoint）。
+实验4 实现非AI 闭环需要的最小集：Run、DecisionPoint、Report。
+`Action` 与 `GuardrailVerdict` 用 dict 表示（值对象，内嵌于 DecisionPoint）。
+
+修订版相对初版新增的关键能力：**字段级校验**（`validate()`），
+把“格式错误的数据”挡在落盘之前，而不是等到读的时候才炸。
 """
 
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Dict, List, Optional
+
+from .actions import ALLOWED_ACTION_TYPES, ALLOWED_OUTCOMES, ALLOWED_RUN_STATUS
+from .errors import ValidationError
 
 
 def now_iso() -> str:
@@ -17,8 +23,28 @@ def now_iso() -> str:
 
 
 def new_id(prefix: str) -> str:
-    """生成短 ID，例如 run-3f9a2c1d、dp-3f9a2c1d-02。"""
+    """生成短 ID，例如 run-3f9a2c1d。"""
     return "%s-%s" % (prefix, uuid.uuid4().hex[:8])
+
+
+def validate_action(action, name="action"):
+    """校验一个动作值对象；不合法时抛 ValidationError。"""
+    if action is None:
+        return
+    if not isinstance(action, dict):
+        raise ValidationError("%s 必须是对象" % name, field=name, value=action)
+    kind = action.get("action_type")
+    if kind not in ALLOWED_ACTION_TYPES:
+        raise ValidationError(
+            "%s 的动作类型 %r 不合法，只能是 %s" % (name, kind, "／".join(ALLOWED_ACTION_TYPES)),
+            field=name + ".action_type", value=kind)
+    cost = action.get("energy_cost")
+    if cost is not None:
+        try:
+            if int(cost) < 0:
+                raise ValidationError("%s 的能量消耗不能为负" % name, field=name + ".energy_cost", value=cost)
+        except (TypeError, ValueError):
+            raise ValidationError("%s 的能量消耗必须是整数" % name, field=name + ".energy_cost", value=cost)
 
 
 @dataclass
@@ -32,7 +58,18 @@ class Run:
     ended_at: Optional[str] = None
     status: str = "running"                # running / finished / aborted
     config_snapshot: Dict = field(default_factory=dict)
-    outcome: Optional[str] = None          # 胜 / 负
+    outcome: Optional[str] = None          # 胜 / 负 / 中止
+
+    def validate(self) -> bool:
+        if not self.run_id:
+            raise ValidationError("对局缺少 run_id", field="run_id")
+        if self.status not in ALLOWED_RUN_STATUS:
+            raise ValidationError("对局状态 %r 不合法，只能是 %s" % (self.status, "／".join(ALLOWED_RUN_STATUS)),
+                                  field="status", value=self.status)
+        if self.outcome is not None and self.outcome not in ALLOWED_OUTCOMES:
+            raise ValidationError("对局结果 %r 不合法，只能是 %s" % (self.outcome, "／".join(ALLOWED_OUTCOMES)),
+                                  field="outcome", value=self.outcome)
+        return True
 
     def to_dict(self) -> Dict:
         return {
@@ -80,6 +117,28 @@ class DecisionPoint:
     result: Dict = field(default_factory=dict)
     created_at: str = field(default_factory=now_iso)
 
+    def validate(self) -> bool:
+        """字段级校验：把错误数据挡在落盘之前（讲义 2.2 的“格式错误”场景）。"""
+        if not self.dp_id:
+            raise ValidationError("决策点缺少 dp_id", field="dp_id")
+        if not self.run_id:
+            raise ValidationError("决策点缺少 run_id", field="run_id")
+        try:
+            if int(self.turn) < 1:
+                raise ValidationError("回合数必须 ≥ 1", field="turn", value=self.turn)
+            if int(self.seq) < 1:
+                raise ValidationError("决策点序号必须 ≥ 1", field="seq", value=self.seq)
+        except (TypeError, ValueError):
+            raise ValidationError("回合数与序号必须是整数", field="turn/seq",
+                                  value={"turn": self.turn, "seq": self.seq})
+        if not isinstance(self.confidence, (int, float)) or not (0.0 <= float(self.confidence) <= 1.0):
+            raise ValidationError("置信度必须在 0–1 之间", field="confidence", value=self.confidence)
+        if not isinstance(self.legal_actions, list) or any(not isinstance(x, str) for x in self.legal_actions):
+            raise ValidationError("合法动作集必须是字符串列表", field="legal_actions", value=self.legal_actions)
+        validate_action(self.suggestion_action, "suggestion_action")
+        validate_action(self.player_action, "player_action")
+        return True
+
     def to_dict(self) -> Dict:
         return {
             "dp_id": self.dp_id,
@@ -104,13 +163,13 @@ class DecisionPoint:
         return cls(
             dp_id=data.get("dp_id", ""),
             run_id=data.get("run_id", ""),
-            turn=int(data.get("turn", 0)),
-            seq=int(data.get("seq", 0)),
+            turn=data.get("turn", 0),
+            seq=data.get("seq", 0),
             state_summary=data.get("state_summary", ""),
             legal_actions=list(data.get("legal_actions") or []),
             suggestion_action=data.get("suggestion_action"),
             suggestion_reason=data.get("suggestion_reason", ""),
-            confidence=float(data.get("confidence", 0.0)),
+            confidence=data.get("confidence", 0.0),
             player_action=data.get("player_action"),
             is_consistent=bool(data.get("is_consistent", False)),
             guardrail=data.get("guardrail") or {},
@@ -124,7 +183,7 @@ class DecisionPoint:
         """建议动作与玩家实际操作是否一致（按 action_type + card_name 比较）。"""
         if not self.suggestion_action or not self.player_action:
             return False
-        key = lambda a: (a.get("action_type"), a.get("card_name"))
+        key = lambda a: (a.get("action_type"), a.get("card_name"))  # noqa: E731
         return key(self.suggestion_action) == key(self.player_action)
 
     def is_flagged(self) -> bool:
