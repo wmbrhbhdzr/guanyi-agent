@@ -21,6 +21,7 @@ import argparse
 import json
 import sys
 
+from .ai import prompts
 from .app.service import SessionService
 from .core.errors import GuanyiError, ValidationError, zh_message
 from .data.sample import reset, seed_empty_run, seed_sample_run
@@ -145,6 +146,64 @@ def cmd_report(args, service):
     return _print({"ok": True, **result})
 
 
+# ---------------- 实验5：知识问答（RAG）----------------
+def _qa_service(args):
+    from .app.qa_service import QaService
+    return QaService(kb_dir=args.kb, out_dir=args.qa_dir)
+
+
+def cmd_kb(args, service):
+    """只做检索预览（不调用模型），用于检查检索质量与排序依据。"""
+    qa = _qa_service(args)
+    stats = qa.kb_stats()
+    if not args.q:
+        return _print({"ok": True, "knowledge_base": stats})
+    result = qa.retriever.search(args.q, top_k=args.top_k)
+    hits = [{"rank": h["rank"], "title": h["title"], "chunk_id": h["chunk_id"],
+             "score": h["score"], "bm25": h["bm25"], "cosine": h["cosine"],
+             "matched_terms": h["matched_terms"], "chars": h["chars"], "source": h["source"],
+             "text": h["text"] if args.show_text else h["text"][:120] + "…"} for h in result["hits"]]
+    return _print({"ok": result["ok"], "query": args.q, "top_k": args.top_k,
+                   "reason": result["reason"], "query_terms": result.get("query_terms"),
+                   "hits": hits})
+
+
+def cmd_ask(args, service):
+    """问答入口：`--no-rag` 走直接模型组，默认走 RAG 组。"""
+    qa = _qa_service(args)
+    result = qa.ask(args.q, use_rag=not args.no_rag, top_k=args.top_k,
+                    prompt_version=args.prompt_version)
+    return _print({
+        "ok": result["ok"],
+        "question": args.q,
+        "prompt_version": result.get("prompt_version"),
+        "insufficient": result.get("insufficient", False),
+        "answer": result.get("answer"),
+        "sources": [{"source_id": "[来源%d]" % h["rank"], "title": h["title"],
+                     "score": h["score"], "chunk_id": h["chunk_id"]} for h in result.get("hits", [])],
+        "usage": result.get("usage"), "cost": result.get("cost"),
+        "latency_ms": result.get("latency_ms"), "model": result.get("model"),
+        "error": result.get("error") or None,
+        "saved_path": result.get("saved_path"),
+    })
+
+
+def cmd_context(args, service):
+    """展示“实际发送给模型的完整输入”（讲义 2.2 要求留证）。不调用模型，不产生费用。"""
+    qa = _qa_service(args)
+    hits, reason = [], "未使用检索（--no-rag）"
+    if not args.no_rag:
+        retrieval = qa.retriever.search(args.q, top_k=args.top_k)
+        hits, reason = retrieval.get("hits", []), retrieval.get("reason", "")
+    version = args.prompt_version or ("v2" if not args.no_rag else "direct")
+    messages = prompts.build_messages(args.q, hits, version=version)
+    return _print({"ok": True, "question": args.q, "prompt_version": version,
+                   "retrieval": reason, "hit_count": len(hits),
+                   "message_count": len(messages),
+                   "total_chars": sum(len(m["content"]) for m in messages),
+                   "messages": messages})
+
+
 def _add_state_args(parser):
     parser.add_argument("--hp", type=int, help="玩家当前血量")
     parser.add_argument("--max-hp", type=int, help="玩家最大血量（默认 80）")
@@ -205,6 +264,20 @@ def build_parser():
     p = sub.add_parser("report", help="生成逐回合复盘报告")
     p.add_argument("--run", required=True)
     p.set_defaults(func=cmd_report)
+
+    # ---- 实验5：知识问答（RAG）----
+    for name, func, helptext in (("kb", cmd_kb, "检索预览：查看 Top-k 片段与排序依据"),
+                                 ("ask", cmd_ask, "知识问答：默认用 RAG，--no-rag 为直接模型组"),
+                                 ("context", cmd_context, "展示实际发送给模型的完整输入")):
+        p = sub.add_parser(name, help=helptext)
+        p.add_argument("--q", default="", help="问题")
+        p.add_argument("--top-k", type=int, default=3, help="检索片段数（默认 3）")
+        p.add_argument("--prompt-version", default=None, choices=["v1", "v2", "direct"])
+        p.add_argument("--no-rag", action="store_true", help="不给资料，直接问模型")
+        p.add_argument("--kb", default="knowledge", help="知识库目录（默认 knowledge/）")
+        p.add_argument("--qa-dir", default="data/qa", help="问答记录目录（默认 data/qa/）")
+        p.add_argument("--show-text", action="store_true", help="（kb）输出完整片段正文")
+        p.set_defaults(func=func)
     return parser
 
 

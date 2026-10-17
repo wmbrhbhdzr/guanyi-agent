@@ -22,11 +22,22 @@ except Exception:                                         # noqa: BLE001
 
 import tkinter.messagebox as messagebox  # noqa: E402
 
-from guanyi.app.service import SessionService  # noqa: E402
-from guanyi.data.store import JsonlStore  # noqa: E402
-from guanyi.ui.main_window import GuanyiApp  # noqa: E402
+from guanyi.ai.llm_client import LlmResult        # noqa: E402
+from guanyi.app.qa_service import QaService        # noqa: E402
+from guanyi.app.service import SessionService      # noqa: E402
+from guanyi.data.store import JsonlStore           # noqa: E402
+from guanyi.ui.main_window import GuanyiApp        # noqa: E402
 
 ROOT = "data/_ui_smoke"
+
+
+class FakeQaClient:
+    """假模型客户端：界面冒烟测试不联网、不产生费用。"""
+
+    def chat(self, messages, **kwargs):
+        return LlmResult(ok=True, text="【模拟回答】痛击升级后造成 10 点伤害、给予 3 层易伤[来源1]。",
+                         usage={"prompt_tokens": 500, "completion_tokens": 30, "total_tokens": 530},
+                         cost={"cost_total_yuan": 0.0001}, latency_ms=12.3, model="fake")
 
 
 def main():
@@ -36,7 +47,8 @@ def main():
 
     shutil.rmtree(ROOT, ignore_errors=True)
     service = SessionService(JsonlStore(os.path.join(ROOT, "runs")))
-    app = GuanyiApp(service)
+    qa = QaService(kb_dir="knowledge", client=FakeQaClient())
+    app = GuanyiApp(service, qa=qa)
     app.update()
     print("⓪ 启动时的局面摘要（应自动生成，不为空）：%s" % (app.state_entry.get() or "（空！）"))
 
@@ -84,8 +96,26 @@ def main():
     for line in head[:12]:
         print("   %s" % line)
 
+    # ⑧ 答疑页（实验5）：RAG 模式 → 假模型返回带引用的回答
+    app.qa_entry.delete(0, "end")
+    app.qa_entry.insert(0, "痛击升级之后有什么变化？")
+    app.qa_mode.set("rag")
+    app.on_ask()
+    app.update()
+    print("⑧ 答疑页（RAG 模式）")
+    print("   回答：%s" % app.qa_answer.get("1.0", "end").strip())
+    print("   出处：%s" % app.qa_sources.get("1.0", "end").strip().replace("\n", " ｜ "))
+    print("   统计：%s" % app.qa_meta_var.get())
+
+    # ⑨ 资料不足：不调用模型
+    app.qa_entry.delete(0, "end")
+    app.qa_entry.insert(0, "这游戏怎么联机？")
+    app.on_ask()
+    app.update()
+    print("⑨ 资料不足场景：%s" % app.qa_answer.get("1.0", "end").strip())
+
     app.destroy()
-    print("\n界面冒烟测试完成：三个页面均可驱动，无异常抛出。")
+    print("\n界面冒烟测试完成：四个页面均可驱动，无异常抛出。")
 
 
 if __name__ == "__main__":

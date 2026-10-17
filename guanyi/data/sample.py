@@ -1,43 +1,49 @@
 # -*- coding: utf-8 -*-
 """数据层：样例数据的初始化与清空（讲义 2.2 要求“可重复使用的样例数据”）。
 
-修订版新增 `seed_empty_run()`：造一局“没有任何决策点”的对局，用于空数据场景与测试用例 6。
+样例是**《杀戮尖塔 2》第一章**的一场战斗：与“劫掠者刺客”交手三个回合，
+第 3 回合“建议防御、玩家打出攻击”，因此报告里会出现一个关键决策点。
+
+> 说明（需求说明 V1.2 / C6）：实验4 时期的样例沿用《杀戮尖塔》的敌人名，
+> 实验5 起统一改为《杀戮尖塔 2》的敌人（劫掠者刺客，见 knowledge/第一章-敌人.md）。
 """
 
 from ..core.models import DecisionPoint, Run
 from .store import JsonlStore
 
-#: 一局有真实业务含义的样例数据：3 个决策点，第 3 回合建议与实际不一致
+ENEMY = "劫掠者刺客"
+
+#: 三个决策点：前两个建议与实际一致，第 3 个不一致（报告里的关键决策点）
 SAMPLE_POINTS = [
     {
         "turn": 1,
-        "state_summary": "HP 68/80，能量 3/3，手牌 5 张，敌人 颚虫 意图攻击 12",
+        "state_summary": "HP 68/80，能量 3/3，手牌 5 张，敌人 %s HP 23 意图攻击 10" % ENEMY,
         "legal_actions": ["play_card:防御", "play_card:打击", "end_turn"],
         "suggestion_action": {"action_type": "play_card", "card_name": "防御", "energy_cost": 1},
-        "suggestion_reason": "敌人意图 12 点攻击，先减伤可避免后续被连击",
+        "suggestion_reason": "敌人意图 10 点攻击，先减伤可避免被连续消耗",
         "confidence": 0.82,
         "player_action": {"action_type": "play_card", "card_name": "防御", "energy_cost": 1},
-        "result": {"hp_delta": -8, "note": "HP 68 → 60"},
+        "result": {"hp_delta": -5, "note": "HP 68 → 63"},
     },
     {
         "turn": 2,
-        "state_summary": "HP 60/80，能量 3/3，手牌 5 张，敌人 HP 32 意图攻击 9",
+        "state_summary": "HP 63/80，能量 3/3，手牌 5 张，敌人 %s HP 23 意图攻击 10" % ENEMY,
         "legal_actions": ["play_card:防御", "play_card:打击", "end_turn"],
         "suggestion_action": {"action_type": "play_card", "card_name": "打击", "energy_cost": 1},
-        "suggestion_reason": "敌方血量已低，用低费攻击压血，保留能量应对后续",
+        "suggestion_reason": "敌方血量仍高，用低费攻击压血，同时保留能量应对后续",
         "confidence": 0.74,
         "player_action": {"action_type": "play_card", "card_name": "打击", "energy_cost": 1},
-        "result": {"enemy_hp_delta": -9, "note": "敌人 HP 32 → 23"},
+        "result": {"hp_delta": -10, "enemy_hp_delta": -6, "note": "敌人 HP 23 → 17，HP 63 → 53"},
     },
     {
         "turn": 3,
-        "state_summary": "HP 42/80，能量 2/3，敌人 HP 23 意图攻击 11",
+        "state_summary": "HP 53/80，能量 2/3，敌人 %s HP 17 意图攻击 10" % ENEMY,
         "legal_actions": ["play_card:防御", "play_card:打击", "end_turn"],
         "suggestion_action": {"action_type": "play_card", "card_name": "防御", "energy_cost": 1},
-        "suggestion_reason": "下回合有斩杀牌，本回合先保血更稳",
+        "suggestion_reason": "敌方血量已进入斩杀范围，本回合先保血，下回合再收尾更稳",
         "confidence": 0.69,
         "player_action": {"action_type": "play_card", "card_name": "打击", "energy_cost": 1},
-        "result": {"hp_delta": -11, "enemy_hp_delta": -8, "note": "HP 42 → 31，敌人 HP 23 → 15"},
+        "result": {"hp_delta": -10, "enemy_hp_delta": -6, "note": "HP 53 → 43，敌人 HP 17 → 11"},
     },
 ]
 

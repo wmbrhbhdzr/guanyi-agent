@@ -52,12 +52,13 @@ CARDS = ["防御", "打击", "重击", "痛击", "铁斩波"]
 class GuanyiApp(tk.Tk):
     """观弈主窗口。"""
 
-    def __init__(self, service=None):
+    def __init__(self, service=None, qa=None):
         super().__init__()
         self.service = service or SessionService(JsonlStore())
-        self.title("观弈 GuanYi · 仅复盘模式（实验4 非 AI 版本）")
-        self.geometry("1080x720")
-        self.minsize(940, 620)
+        self._qa = qa                      # 答疑服务（实验5）；None 时首次使用再创建
+        self.title("观弈 GuanYi · 仅复盘模式（实验5：加入知识问答）")
+        self.geometry("1080x760")
+        self.minsize(940, 640)
 
         self.run_var = tk.StringVar()
         self.status_var = tk.StringVar(value="就绪：请先新建或选择一局对局")
@@ -65,6 +66,8 @@ class GuanyiApp(tk.Tk):
         self.guardrail_text = tk.StringVar(value="（还没有护栏结论）")
         self.report_path_var = tk.StringVar(value="")
         self.problems_var = tk.StringVar(value="")
+        self.qa_meta_var = tk.StringVar(value="")
+        self.qa_mode = tk.StringVar(value="rag")
 
         self._build_toolbar()
         self._build_pages()
@@ -86,19 +89,22 @@ class GuanyiApp(tk.Tk):
         ttk.Label(bar, text="档位：仅复盘　·　决策来源：规则基线（非 AI）",
                   foreground="#2F4B7C").pack(side="right")
 
-    # ---------------- 三个页面 ----------------
+    # ---------------- 四个页面 ----------------
     def _build_pages(self):
         self.nb = ttk.Notebook(self)
         self.nb.pack(fill="both", expand=True, padx=10, pady=(0, 6))
         self.tab_task = ttk.Frame(self.nb, padding=10)
         self.tab_list = ttk.Frame(self.nb, padding=10)
         self.tab_report = ttk.Frame(self.nb, padding=10)
+        self.tab_qa = ttk.Frame(self.nb, padding=10)
         self.nb.add(self.tab_task, text="核心任务页")
         self.nb.add(self.tab_list, text="记录列表")
         self.nb.add(self.tab_report, text="复盘报告")
+        self.nb.add(self.tab_qa, text="答疑（知识库）")
         self._build_task_tab()
         self._build_list_tab()
         self._build_report_tab()
+        self._build_qa_tab()
 
     def _build_task_tab(self):
         left = ttk.LabelFrame(self.tab_task, text="① 局面（你来填）", padding=10)
@@ -383,6 +389,76 @@ class GuanyiApp(tk.Tk):
                                  % (result["path"], result["summary"]["decision_count"]))
         self.status_var.set("复盘报告已生成，可在“复盘报告”页阅读或导出")
         self.nb.select(self.tab_report)
+
+
+    # ---------------- 实验5：答疑页 ----------------
+    def _build_qa_tab(self):
+        top = ttk.Frame(self.tab_qa)
+        top.pack(fill="x")
+        ttk.Label(top, text="问一句（卡牌 / 状态 / 敌人 / 打法）").pack(side="left")
+        ttk.Radiobutton(top, text="用知识库（RAG）", variable=self.qa_mode,
+                        value="rag").pack(side="left", padx=(12, 4))
+        ttk.Radiobutton(top, text="直接问模型（不给资料）", variable=self.qa_mode,
+                        value="direct").pack(side="left")
+        self.qa_entry = ttk.Entry(self.tab_qa)
+        self.qa_entry.pack(fill="x", pady=6)
+        self.qa_entry.insert(0, "痛击升级之后有什么变化？")
+        self.qa_entry.bind("<Return>", lambda _e: self.on_ask())
+        row = ttk.Frame(self.tab_qa)
+        row.pack(fill="x")
+        ttk.Button(row, text="提问", command=self.on_ask).pack(side="left")
+        ttk.Label(row, textvariable=self.qa_meta_var, foreground="#2E7D32").pack(side="left", padx=12)
+        ttk.Label(row, text="回答只依据知识库，句末 [来源N] 可对照下方出处",
+                  foreground="#607D8B").pack(side="right")
+
+        body = ttk.Panedwindow(self.tab_qa, orient="vertical")
+        body.pack(fill="both", expand=True, pady=(8, 0))
+        answer_box = ttk.LabelFrame(body, text="回答", padding=6)
+        self.qa_answer = tk.Text(answer_box, wrap="word", height=9)
+        self.qa_answer.pack(fill="both", expand=True)
+        body.add(answer_box, weight=3)
+        source_box = ttk.LabelFrame(body, text="出处（检索到的知识片段）", padding=6)
+        self.qa_sources = tk.Text(source_box, wrap="word", height=6)
+        self.qa_sources.pack(fill="both", expand=True)
+        body.add(source_box, weight=2)
+
+    def on_ask(self):
+        """提问：默认走 RAG，可切换到“直接问模型”做对照。"""
+        question = self.qa_entry.get().strip()
+        if not question:
+            self.status_var.set("请先输入问题")
+            return
+        if self._qa is None:
+            try:
+                from ..app.qa_service import QaService
+                self._qa = QaService()
+            except Exception as exc:                   # noqa: BLE001
+                return self._fail(exc)
+        use_rag = self.qa_mode.get() == "rag"
+        self.status_var.set("正在检索并请求模型……")
+        self.update()
+        try:
+            result = self._qa.ask(question, use_rag=use_rag)
+        except Exception as exc:                       # noqa: BLE001
+            self.status_var.set("提问失败")
+            return self._fail(exc)
+
+        self.qa_answer.delete("1.0", "end")
+        self.qa_answer.insert("1.0", result.get("answer") or "（没有回答）")
+        lines = []
+        for hit in result.get("hits", []):
+            lines.append("[来源%d] %s（相关度 %.2f）\n    %s"
+                         % (hit["rank"], hit["title"], hit["score"], hit.get("source") or ""))
+        if not lines:
+            lines = ["（本次没有检索到资料）" if use_rag else "（直接模型组：未使用知识库）"]
+        self.qa_sources.delete("1.0", "end")
+        self.qa_sources.insert("1.0", "\n".join(lines))
+        cost = (result.get("cost") or {}).get("cost_total_yuan", 0) or 0
+        suffix = "　（资料不足，未调用模型）" if result.get("insufficient") else ""
+        self.qa_meta_var.set("模式：%s　耗时 %.0f ms　费用 %.4f 元%s"
+                             % ("RAG" if use_rag else "直接模型",
+                                result.get("latency_ms") or 0, cost, suffix))
+        self.status_var.set("已回答：%s" % question)
 
 
 def main():
