@@ -53,6 +53,11 @@
 
 ## 3. 操作记录
 
+**代码与版本**：仓库 https://github.com/wmbrhbhdzr/guanyi-agent；
+实现位于 `guanyi/agent/`，测试位于 `tests/test_agent.py`，
+运行说明见 `docs/实验6-运行说明.md`。
+实现对应 Commit：46f669439f282187e94bf887f3fda1544f107ba3
+
 ### 3.1 任务选择与边界（对应 2.1）
 
 | 项       | 内容                                                                                                                                                                                         |
@@ -84,13 +89,13 @@
 
 ### 3.2 工具接口与参数约束（对应 2.2）
 
-| 工具                 | 用途           | 输入字段（类型 / 必填 / 约束）                                  | 返回                                                                     | 错误                                          | 最长等待 | 改数据                     | 重复调用                                             |
-| -------------------- | -------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------ | --------------------------------------------- | -------- | -------------------------- | ---------------------------------------------------- |
-| `list_runs`        | 列出对局       | 无                                                              | `{count, runs[]}`                                                      | —                                            | 20 s     | 否                         | 结果相同                                             |
-| `get_decisions`    | 读逐回合决策点 | `run_id: string / 必填 / ^run-[A-Za-z0-9_-]{1,30}$`           | `{decisions[], problems[]}`                                            | `not_found`、`invalid_argument`           | 20 s     | 否                         | 结果相同                                             |
-| `compute_stats`    | 算复盘统计     | `run_id`（同上）                                              | `{decision_count, consistent_rate, inconsistent_turns, hp_lost_total}` | 同上                                          | 20 s     | 否                         | 结果相同                                             |
-|  `query_knowledge` | 查 STS2 知识   | `question: string / 必填`、`top_k: integer / 1–5 / 默认 3` | `{hits[]}`；无结果时 `{ok:true, insufficient:true}`                  | `invalid_argument`、`out_of_range`        | 20 s     | 否                         | 结果相同                                             |
-| `write_report`     | 写复盘报告     | `run_id`（同上）                                              | `{path, decision_count, overwritten, sha256}`                          | `not_confirmed`、`not_found`、`timeout` | 30 s     | **覆盖写 report.md** | 覆盖同一文件，不新增对局或决策记录；生成时间可能更新 |
+| 工具                | 用途           | 输入字段（类型 / 必填 / 约束）                                  | 返回                                                                     | 错误                                          | 最长等待 | 改数据                     | 重复调用                                             |
+| ------------------- | -------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------ | --------------------------------------------- | -------- | -------------------------- | ---------------------------------------------------- |
+| `list_runs`       | 列出对局       | 无                                                              | `{count, runs[]}`                                                      | —                                            | 20 s     | 否                         | 结果相同                                             |
+| `get_decisions`   | 读逐回合决策点 | `run_id: string / 必填 / ^run-[A-Za-z0-9_-]{1,30}$`           | `{decisions[], problems[]}`                                            | `not_found`、`invalid_argument`           | 20 s     | 否                         | 结果相同                                             |
+| `compute_stats`   | 算复盘统计     | `run_id`（同上）                                              | `{decision_count, consistent_rate, inconsistent_turns, hp_lost_total}` | 同上                                          | 20 s     | 否                         | 结果相同                                             |
+| `query_knowledge` | 查 STS2 知识   | `question: string / 必填`、`top_k: integer / 1–5 / 默认 3` | `{hits[]}`；无结果时 `{ok:true, insufficient:true}`                  | `invalid_argument`、`out_of_range`        | 20 s     | 否                         | 结果相同                                             |
+| `write_report`    | 写复盘报告     | `run_id`（同上）                                              | `{path, decision_count, overwritten, sha256}`                          | `not_confirmed`、`not_found`、`timeout` | 30 s     | **覆盖写 report.md** | 覆盖同一文件，不新增对局或决策记录；生成时间可能更新 |
 
 **白名单与执行前检查（程序执行）**：模型只能调用注册表里的 5 个工具名；未知名字直接返回
 `unknown_tool`；每个参数按 Schema 校验类型、必填、取值区间与正则；`run_id` 正则通过后才由存储层拼路径，
