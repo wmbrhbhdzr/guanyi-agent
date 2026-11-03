@@ -25,6 +25,7 @@ import tkinter.messagebox as messagebox  # noqa: E402
 from guanyi.ai.llm_client import LlmResult        # noqa: E402
 from guanyi.app.qa_service import QaService        # noqa: E402
 from guanyi.app.service import SessionService      # noqa: E402
+from guanyi.data.sample import seed_sample_run         # noqa: E402
 from guanyi.data.store import JsonlStore           # noqa: E402
 from guanyi.ui.main_window import GuanyiApp        # noqa: E402
 
@@ -40,15 +41,38 @@ class FakeQaClient:
                          cost={"cost_total_yuan": 0.0001}, latency_ms=12.3, model="fake")
 
 
+class FakeAgentClient:
+    """Agent 用的假模型：先调一次 compute_stats，再给出符合校验要求的结论（不联网）。"""
+
+    def __init__(self):
+        self.round = 0
+
+    def chat(self, messages, **kwargs):
+        self.round += 1
+        if self.round == 1:
+            call = {"id": "call_stats", "type": "function",
+                    "function": {"name": "compute_stats", "arguments": '{"run_id": "run-0001"}'}}
+            return LlmResult(ok=True, text="", tool_calls=[call], usage={"prompt_tokens": 200,
+                                                                         "completion_tokens": 10},
+                             cost={"cost_total_yuan": 0.0001}, latency_ms=8.0, model="fake")
+        return LlmResult(ok=True,
+                         text="【模拟结论】决策点数 3，一致率 66.7%，不一致的回合是第 3 回合；"
+                              "建议该回合优先防御而不是抢输出。",
+                         usage={"prompt_tokens": 400, "completion_tokens": 40},
+                         cost={"cost_total_yuan": 0.0002}, latency_ms=9.0, model="fake")
+
+
 def main():
     # 无人值守：对话框改为打印
     messagebox.showwarning = lambda title, msg, **kw: print("[提示框] %s / %s" % (title, msg.replace("\n", " ")))
     messagebox.showerror = lambda title, msg, **kw: print("[错误框] %s / %s" % (title, msg.replace("\n", " ")))
 
     shutil.rmtree(ROOT, ignore_errors=True)
-    service = SessionService(JsonlStore(os.path.join(ROOT, "runs")))
+    store = JsonlStore(os.path.join(ROOT, "runs"))
+    seed_sample_run(store, "run-0001")          # Agent 页要分析样例行，先备好数据
+    service = SessionService(store)
     qa = QaService(kb_dir="knowledge", client=FakeQaClient())
-    app = GuanyiApp(service, qa=qa)
+    app = GuanyiApp(service, qa=qa, agent_client=FakeAgentClient())
     app.update()
     print("⓪ 启动时的局面摘要（应自动生成，不为空）：%s" % (app.state_entry.get() or "（空！）"))
 
@@ -114,8 +138,24 @@ def main():
     app.update()
     print("⑨ 资料不足场景：%s" % app.qa_answer.get("1.0", "end").strip())
 
+    # ⑩ 复盘 Agent 页（实验6）：工具白名单 + 一次完整循环（假模型）
+    app.nb.select(app.tab_agent)
+    app.on_show_tools()
+    app.update()
+    print("⑩ Agent 页：工具白名单")
+    print("   %s" % app.agent_log.get("1.0", "end").strip().replace("\n", "\n   "))
+    app.agent_task_var.set("分析 run-0001：查统计并给出结论")
+    app.on_run_agent()
+    app.update()
+    print("⑪ Agent 运行：%s" % app.agent_status_var.get())
+    print("   结论：%s" % app.agent_answer.get("1.0", "end").strip().replace("\n", " "))
+    log_lines = app.agent_log.get("1.0", "end").strip().splitlines()
+    print("   日志 %d 行（前 4 行）：" % len(log_lines))
+    for line in log_lines[:4]:
+        print("     %s" % line)
+
     app.destroy()
-    print("\n界面冒烟测试完成：四个页面均可驱动，无异常抛出。")
+    print("\n界面冒烟测试完成：五个页面均可驱动，无异常抛出。")
 
 
 if __name__ == "__main__":

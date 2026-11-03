@@ -93,12 +93,14 @@ class LlmResult:
     model: str = ""
     finish_reason: str = ""
     attempts: int = 0
+    tool_calls: List[Dict] = field(default_factory=list)   # 模型提出的工具调用请求（实验6）
 
     def to_dict(self) -> Dict:
         return {
             "ok": self.ok, "text": self.text, "error": self.error, "usage": self.usage,
             "cost": self.cost, "latency_ms": self.latency_ms, "model": self.model,
             "finish_reason": self.finish_reason, "attempts": self.attempts,
+            "tool_calls": self.tool_calls,
         }
 
 
@@ -133,14 +135,23 @@ class LlmClient:
             "max_tokens": overrides.get("max_tokens", self.max_tokens),
             "stream": False,
         }
+        tools = overrides.get("tools")
+        if tools:
+            payload["tools"] = tools
+            payload["tool_choice"] = overrides.get("tool_choice", "auto")
         url = self.base_url + "/chat/completions"
         timeout = overrides.get("timeout", self.timeout)
+        deadline = overrides.get("deadline")  # Harness 的单调时钟截止时间，含退避与重试。
         attempts = 0
         last_error: Dict = {}
         for attempt in range(self.retries + 1):
+            remaining = deadline - time.monotonic() if deadline is not None else timeout
+            if remaining <= 0:
+                last_error = {"code": "timeout", "message": "模型调用等待预算已耗尽"}
+                break
             attempts = attempt + 1
             try:
-                body, elapsed_ms = self._post(url, payload, timeout)
+                body, elapsed_ms = self._post(url, payload, min(timeout, remaining))
             except urllib.error.HTTPError as exc:
                 detail = ""
                 try:
@@ -164,9 +175,16 @@ class LlmClient:
             except Exception as exc:                    # noqa: BLE001
                 last_error = {"code": "unexpected", "message": "%s: %s" % (type(exc).__name__, exc)}
             else:
+                if deadline is not None and time.monotonic() >= deadline:
+                    last_error = {"code": "timeout", "message": "模型结果在截止时间之后返回"}
+                    break
                 return self._parse(body, elapsed_ms, attempts)
             if attempt < self.retries:
-                time.sleep(1.5 * (attempt + 1))          # 退避后重试
+                delay = 1.5 * (attempt + 1)
+                if deadline is not None and time.monotonic() + delay >= deadline:
+                    last_error = {"code": "timeout", "message": "剩余预算不足以退避重试"}
+                    break
+                time.sleep(delay)                      # 退避后重试
         return LlmResult(ok=False, error=last_error, attempts=attempts,
                          model=payload["model"])
 
@@ -185,17 +203,17 @@ class LlmClient:
         return body, (time.perf_counter() - started) * 1000.0
 
     def _parse(self, body: Dict, elapsed_ms: float, attempts: int) -> LlmResult:
-        try:
-            text = body["choices"][0]["message"]["content"] or ""
-        except Exception:                               # noqa: BLE001
-            text = ""
+        message = (body.get("choices") or [{}])[0].get("message") or {}
+        text = str(message.get("content") or "").strip()
+        tool_calls = message.get("tool_calls") or []
         finish = (body.get("choices") or [{}])[0].get("finish_reason") or ""
         usage = body.get("usage") or {}
         result = LlmResult(
-            ok=True, text=text.strip(), usage=usage, cost=compute_cost(usage, is_offpeak()),
+            ok=True, text=text, tool_calls=tool_calls, usage=usage,
+            cost=compute_cost(usage, is_offpeak()),
             latency_ms=round(elapsed_ms, 1), model=body.get("model", self.model),
             finish_reason=finish, attempts=attempts)
-        if not result.text:
+        if not result.text and not result.tool_calls:
             result.ok = False
             result.error = {"code": "empty_response",
                             "message": "模型返回为空（可能是 max_tokens 被推理占满或被截断）"}

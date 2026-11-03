@@ -204,6 +204,33 @@ def cmd_context(args, service):
                    "messages": messages})
 
 
+#: 实验6：Agent 的默认任务目标
+AGENT_DEFAULT_TASK = (
+    "分析 run-0001 这一局：先用工具查出这局的决策点数量、建议与实际操作的一致率、"
+    "有哪些回合不一致，需要时查知识库解释原因，最后把复盘报告写出来并给出结论。")
+
+
+def cmd_agent(args, service):
+    """实验6：复盘分析 Agent（模型自主调用工具；写操作需人工确认）。"""
+    from .agent import AgentConfig, AgentHarness, AutoApprove, CliConfirm, build_registry
+    registry = build_registry(service=service)
+    if args.tools:
+        return _print({"ok": True, "count": len(registry.names()), "tools": registry.describe()})
+    confirm = AutoApprove() if args.yes else CliConfirm(timeout_s=args.confirm_timeout)
+    harness = AgentHarness(
+        registry=registry, confirm=confirm,
+        config=AgentConfig(max_steps=args.max_steps, total_timeout_s=args.timeout))
+    result = harness.run(args.task)
+    code = _print({
+        "ok": result.ok, "status": result.status, "steps": result.steps,
+        "elapsed_ms": result.elapsed_ms, "task_id": result.task_id,
+        "tool_calls": result.tool_calls, "validation": result.validation,
+        "final_answer": result.final_answer, "report_written": result.report_written,
+        "trace_path": result.trace_path, "error": result.error or None,
+    })
+    return code if result.ok else 2
+
+
 def _add_state_args(parser):
     parser.add_argument("--hp", type=int, help="玩家当前血量")
     parser.add_argument("--max-hp", type=int, help="玩家最大血量（默认 80）")
@@ -278,6 +305,16 @@ def build_parser():
         p.add_argument("--qa-dir", default="data/qa", help="问答记录目录（默认 data/qa/）")
         p.add_argument("--show-text", action="store_true", help="（kb）输出完整片段正文")
         p.set_defaults(func=func)
+
+    # ---- 实验6：复盘分析 Agent（工具调用 + Harness）----
+    p = sub.add_parser("agent", help="复盘分析 Agent：模型自主调用工具分析对局（写操作需确认）")
+    p.add_argument("--task", default=AGENT_DEFAULT_TASK, help="任务目标")
+    p.add_argument("--max-steps", type=int, default=8, help="最大执行步数（默认 8）")
+    p.add_argument("--timeout", type=float, default=120.0, help="总运行时限（秒，默认 120）")
+    p.add_argument("--yes", action="store_true", help="自动同意写操作（演示用；默认需要人工确认）")
+    p.add_argument("--confirm-timeout", type=float, default=30.0, help="等待确认的秒数（超时视为拒绝）")
+    p.add_argument("--tools", action="store_true", help="只列出工具白名单与参数 Schema")
+    p.set_defaults(func=cmd_agent)
     return parser
 
 

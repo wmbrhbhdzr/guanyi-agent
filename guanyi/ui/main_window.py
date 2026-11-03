@@ -52,11 +52,12 @@ CARDS = ["防御", "打击", "重击", "痛击", "铁斩波"]
 class GuanyiApp(tk.Tk):
     """观弈主窗口。"""
 
-    def __init__(self, service=None, qa=None):
+    def __init__(self, service=None, qa=None, agent_client=None):
         super().__init__()
         self.service = service or SessionService(JsonlStore())
         self._qa = qa                      # 答疑服务（实验5）；None 时首次使用再创建
-        self.title("观弈 GuanYi · 仅复盘模式（实验5：加入知识问答）")
+        self._agent_client = agent_client  # Agent 用的模型客户端（实验6）；None 时用真实客户端
+        self.title("观弈 GuanYi · 仅复盘模式（实验5/6：知识问答 + 复盘 Agent）")
         self.geometry("1080x760")
         self.minsize(940, 640)
 
@@ -68,6 +69,10 @@ class GuanyiApp(tk.Tk):
         self.problems_var = tk.StringVar(value="")
         self.qa_meta_var = tk.StringVar(value="")
         self.qa_mode = tk.StringVar(value="rag")
+        self.agent_task_var = tk.StringVar(value=(
+            "分析 run-0001 这一局：先查决策点数、建议与实际的一致率和哪些回合不一致，"
+            "需要时查知识库解释原因，最后写复盘报告并给出结论。"))
+        self.agent_status_var = tk.StringVar(value="（还没运行）")
 
         self._build_toolbar()
         self._build_pages()
@@ -97,14 +102,17 @@ class GuanyiApp(tk.Tk):
         self.tab_list = ttk.Frame(self.nb, padding=10)
         self.tab_report = ttk.Frame(self.nb, padding=10)
         self.tab_qa = ttk.Frame(self.nb, padding=10)
+        self.tab_agent = ttk.Frame(self.nb, padding=10)
         self.nb.add(self.tab_task, text="核心任务页")
         self.nb.add(self.tab_list, text="记录列表")
         self.nb.add(self.tab_report, text="复盘报告")
         self.nb.add(self.tab_qa, text="答疑（知识库）")
+        self.nb.add(self.tab_agent, text="复盘 Agent")
         self._build_task_tab()
         self._build_list_tab()
         self._build_report_tab()
         self._build_qa_tab()
+        self._build_agent_tab()
 
     def _build_task_tab(self):
         left = ttk.LabelFrame(self.tab_task, text="① 局面（你来填）", padding=10)
@@ -459,6 +467,93 @@ class GuanyiApp(tk.Tk):
                              % ("RAG" if use_rag else "直接模型",
                                 result.get("latency_ms") or 0, cost, suffix))
         self.status_var.set("已回答：%s" % question)
+
+
+    # ---------------- 实验6：复盘 Agent 页 ----------------
+    def _build_agent_tab(self):
+        top = ttk.Frame(self.tab_agent)
+        top.pack(fill="x")
+        ttk.Label(top, text="任务目标：").pack(side="left")
+        ttk.Entry(top, textvariable=self.agent_task_var).pack(side="left", fill="x",
+                                                             expand=True, padx=6)
+        ttk.Button(top, text="运行 Agent", command=self.on_run_agent).pack(side="left")
+        ttk.Button(top, text="查看工具白名单", command=self.on_show_tools).pack(side="left", padx=4)
+
+        info = ttk.Frame(self.tab_agent)
+        info.pack(fill="x", pady=4)
+        ttk.Label(info, textvariable=self.agent_status_var, foreground="#2E7D32").pack(side="left")
+        ttk.Label(info, text="写操作（写入复盘报告）执行前会弹窗确认，拒绝或超时则不执行",
+                  foreground="#607D8B").pack(side="right")
+
+        body = ttk.Panedwindow(self.tab_agent, orient="vertical")
+        body.pack(fill="both", expand=True, pady=(6, 0))
+        log_box = ttk.LabelFrame(body, text="运行日志（模型请求、工具调用、确认与校验）", padding=6)
+        self.agent_log = tk.Text(log_box, wrap="word", height=14, font=("Consolas", 9))
+        self.agent_log.pack(fill="both", expand=True)
+        body.add(log_box, weight=3)
+        answer_box = ttk.LabelFrame(body, text="最终结论", padding=6)
+        self.agent_answer = tk.Text(answer_box, wrap="word", height=8)
+        self.agent_answer.pack(fill="both", expand=True)
+        body.add(answer_box, weight=2)
+
+    def on_show_tools(self):
+        """把工具白名单与参数 Schema 显示在日志区（讲义 2.2 要求说明约束）。"""
+        try:
+            from ..agent import build_registry
+            registry = build_registry(service=self.service)
+            lines = ["工具白名单（共 %d 个；写操作需人工确认）：" % len(registry.names())]
+            for tool in registry.describe():
+                params = "、".join(
+                    "%s:%s%s" % (p["name"], p["type"], "（必填）" if p["required"] else "")
+                    for p in tool["params"]) or "无"
+                lines.append("· %s（%s%s）　参数：%s"
+                             % (tool["name"], "只读" if tool["read_only"] else "写操作",
+                                "，需确认" if tool["requires_confirm"] else "", params))
+            self.agent_log.delete("1.0", "end")
+            self.agent_log.insert("1.0", "\n".join(lines))
+        except Exception as exc:                       # noqa: BLE001
+            self._fail(exc)
+
+    def on_run_agent(self):
+        """运行复盘 Agent：同步执行、日志实时刷新；写操作弹窗确认。"""
+        from ..agent import AgentConfig, AgentHarness, GuiConfirm, Trace, build_registry
+        task = self.agent_task_var.get().strip()
+        if not task:
+            self.status_var.set("请先填写任务目标")
+            return
+        try:
+            registry = build_registry(service=self.service)
+        except Exception as exc:                       # noqa: BLE001
+            return self._fail(exc)
+        self.agent_log.delete("1.0", "end")
+        self.agent_answer.delete("1.0", "end")
+        self.agent_status_var.set("运行中……（写操作会弹窗请求确认）")
+
+        def echo(line):
+            try:
+                self.agent_log.insert("end", line + "\n")
+                self.agent_log.see("end")
+                self.update()
+            except Exception:                          # noqa: BLE001
+                pass
+
+        tracer = Trace(out_dir="data/agent", echo=echo)
+        harness = AgentHarness(
+            client=self._agent_client, registry=registry, confirm=GuiConfirm(self),
+            config=AgentConfig(max_steps=8, total_timeout_s=120.0), trace=tracer)
+        try:
+            result = harness.run(task)
+        except Exception as exc:                       # noqa: BLE001
+            self.agent_status_var.set("运行失败")
+            return self._fail(exc)
+        self.agent_answer.insert("1.0", result.final_answer or "（没有最终结论）")
+        self.agent_status_var.set(
+            "状态：%s　步数：%d　耗时：%.1f ms　程序校验：%s"
+            % (result.status, result.steps, result.elapsed_ms,
+               "通过" if result.validation.get("ok")
+               else "未通过（%s）" % result.validation.get("detail")))
+        self.status_var.set("Agent 任务结束：%s（运行记录 %s）"
+                            % (result.status, result.trace_path))
 
 
 def main():
