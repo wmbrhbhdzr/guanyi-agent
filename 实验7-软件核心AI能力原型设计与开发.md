@@ -275,8 +275,10 @@ E05和E06没有补齐遮挡内容，符合“不猜”的要求。E07两版都�
 
 | 版本 | Commit / Tag |
 | --- | --- |
-| 首版基线配置 |  |
-| 修订版 |  |
+| 首版基线配置 | [4655c40](https://github.com/wmbrhbhdzr/guanyi-agent/blob/4655c406132313ce04472b0a53cbf8778f75afef/evaluation/exp7/versions/baseline-config.json)，`baseline-v1-reconstructed` |
+| 修订版 | [4655c40](https://github.com/wmbrhbhdzr/guanyi-agent/tree/4655c406132313ce04472b0a53cbf8778f75afef)，标签 `exp7-prototype-v1` |
+
+此次提交同时保存了首版重建配置和修订版代码，两版通过各自的配置文件区分；首版开发时未单独提交。
 
 | 优先级 | 遗留问题与下一步验收 |
 | --- | --- |
@@ -290,6 +292,7 @@ E05和E06没有补齐遮挡内容，符合“不猜”的要求。E07两版都�
 ### 3.7 代码、证据与复现
 
 仓库：https://github.com/wmbrhbhdzr/guanyi-agent。
+实现对应Commit：`4655c406132313ce04472b0a53cbf8778f75afef`；阶段标签：`exp7-prototype-v1`。
 版本记录见3.6，配置快照和源码哈希保存在`evaluation/exp7/versions/`。
 
 | 编号 | 路径与用途 |
