@@ -1,0 +1,23 @@
+{
+  "id": "E03",
+  "kind": "synthetic",
+  "scenario": "x_cost",
+  "expected": {
+    "scene": "combat",
+    "turn": 2,
+    "player.hp": 68,
+    "player.max_hp": 80,
+    "player.energy": 3,
+    "player.max_energy": 3,
+    "player.block": 5,
+    "enemies.0.hp": 23,
+    "enemies.0.max_hp": 30,
+    "enemies.0.intent_damage": 10,
+    "enemies.0.intent_hits": 1,
+    "hand.0.name": "WHIRLWIND",
+    "hand.0.cost": "X"
+  },
+  "image": "inputs/E03.png",
+  "sha256": "b986cd118c580e0cb479de71dd1c8b421c0df0c434616184c0ba67c020b6cd97",
+  "label_source": "合成图生成参数"
+}

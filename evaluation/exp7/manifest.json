@@ -1,0 +1,15 @@
+{
+  "version": "exp7-fixed-10-v1",
+  "cases": [
+    "cases/E01.json",
+    "cases/E02.json",
+    "cases/E03.json",
+    "cases/E04.json",
+    "cases/E05.json",
+    "cases/E06.json",
+    "cases/E07.json",
+    "cases/E08.json",
+    "cases/E09.json",
+    "cases/E10.json"
+  ]
+}

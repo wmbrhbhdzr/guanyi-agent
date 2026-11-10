@@ -1,0 +1,32 @@
+{
+  "version": "baseline",
+  "case_id": "E08",
+  "kind": "synthetic",
+  "scenario": "blank_invalid_input",
+  "timestamp": "2026-11-10T09:38:50.197751+08:00",
+  "result": {
+    "ok": false,
+    "status": "failed",
+    "observation": null,
+    "error": {
+      "code": "invalid_image",
+      "message": "图片接近纯黑或纯白，没有可识别内容，请换一张游戏截图"
+    },
+    "usage": {},
+    "cost": {},
+    "attempts": 0,
+    "elapsed_ms": 8.905599999707192
+  },
+  "checks": [
+    {
+      "field": "error.code",
+      "expected": "invalid_image",
+      "actual": "invalid_image",
+      "passed": true
+    }
+  ],
+  "review": {
+    "basis": "固定标签规则评分；真实图标签AI辅助目视核对，待用户确认",
+    "user_confirmed": false
+  }
+}

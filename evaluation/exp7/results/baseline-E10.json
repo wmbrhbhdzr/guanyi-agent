@@ -1,0 +1,230 @@
+{
+  "version": "baseline",
+  "case_id": "E10",
+  "kind": "real",
+  "scenario": "hover_detail",
+  "timestamp": "2026-11-10T09:39:40.408709+08:00",
+  "result": {
+    "ok": false,
+    "status": "failed",
+    "observation": null,
+    "error": {
+      "code": "empty_response",
+      "message": "模型返回为空（可能是 max_tokens 被推理占满或被截断）"
+    },
+    "usage": {
+      "prompt_tokens": 1450,
+      "completion_tokens": 2500,
+      "total_tokens": 3950,
+      "prompt_tokens_details": {
+        "cached_tokens": 1280
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 2500
+      },
+      "prompt_cache_hit_tokens": 1280,
+      "prompt_cache_miss_tokens": 170
+    },
+    "cost": {
+      "tier": "peak",
+      "input_cached_tokens": 1280,
+      "input_miss_tokens": 170,
+      "output_tokens": 2500,
+      "cost_input_cached_yuan": 5.12e-05,
+      "cost_input_miss_yuan": 0.00034,
+      "cost_output_yuan": 0.02,
+      "cost_total_yuan": 0.0203912
+    },
+    "attempts": 1,
+    "model": "deepseek-flash",
+    "finish_reason": "length",
+    "raw_response": "",
+    "elapsed_ms": 26087.0
+  },
+  "checks": [
+    {
+      "field": "scene",
+      "expected": "combat",
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "turn",
+      "expected": 1,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "player.hp",
+      "expected": 107,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "player.max_hp",
+      "expected": 107,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "player.energy",
+      "expected": 2,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "player.max_energy",
+      "expected": 3,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "player.block",
+      "expected": 0,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "hand.1.name",
+      "expected": "笨拙",
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "hand.1.cost",
+      "expected": null,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.0.hp",
+      "expected": 18,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.1.hp",
+      "expected": 26,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.2.hp",
+      "expected": 25,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.0.intent_damage",
+      "expected": 1,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.0.intent_hits",
+      "expected": 3,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.1.intent_damage",
+      "expected": 8,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.1.intent_hits",
+      "expected": 1,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.0.block",
+      "expected": 0,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.0.statuses.0.name",
+      "expected": "难以杀灭",
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.0.statuses.0.amount",
+      "expected": 9,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.1.block",
+      "expected": 0,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.1.statuses.0.name",
+      "expected": "难以杀灭",
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.1.statuses.0.amount",
+      "expected": 9,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.2.block",
+      "expected": 0,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.2.statuses.0.name",
+      "expected": "难以杀灭",
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.2.statuses.0.amount",
+      "expected": 9,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "tooltip_association",
+      "expected": "enemy[0]难以杀灭9",
+      "passed": false
+    }
+  ],
+  "review": {
+    "basis": "固定标签规则评分；真实图标签AI辅助目视核对，待用户确认",
+    "user_confirmed": false
+  }
+}

@@ -1,0 +1,177 @@
+{
+  "version": "baseline",
+  "case_id": "E03",
+  "kind": "synthetic",
+  "scenario": "x_cost",
+  "timestamp": "2026-11-10T09:38:38.244089+08:00",
+  "result": {
+    "ok": true,
+    "status": "parsed",
+    "observation": {
+      "scene": "combat",
+      "turn": 2,
+      "player": {
+        "hp": 68,
+        "max_hp": 80,
+        "energy": 3,
+        "max_energy": 3,
+        "block": 5
+      },
+      "hand": [
+        {
+          "name": "WHIRLWIND",
+          "cost": "X",
+          "upgraded": false
+        },
+        {
+          "name": "DEFEND",
+          "cost": 1,
+          "upgraded": false
+        },
+        {
+          "name": "BASH",
+          "cost": 2,
+          "upgraded": false
+        }
+      ],
+      "enemies": [
+        {
+          "name": "TEST SLIME",
+          "hp": 23,
+          "max_hp": 30,
+          "block": 0,
+          "intent": "ATTACK 10 x 1",
+          "intent_damage": 10,
+          "intent_hits": 1
+        }
+      ],
+      "uncertainties": []
+    },
+    "error": null,
+    "usage": {
+      "prompt_tokens": 1012,
+      "completion_tokens": 358,
+      "total_tokens": 1370,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 212
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 756
+    },
+    "cost": {
+      "tier": "peak",
+      "input_cached_tokens": 256,
+      "input_miss_tokens": 756,
+      "output_tokens": 358,
+      "cost_input_cached_yuan": 1.024e-05,
+      "cost_input_miss_yuan": 0.001512,
+      "cost_output_yuan": 0.002864,
+      "cost_total_yuan": 0.00438624
+    },
+    "attempts": 1,
+    "model": "deepseek-flash",
+    "finish_reason": "stop",
+    "raw_response": "{\"scene\":\"combat\",\"turn\":2,\"player\":{\"hp\":68,\"max_hp\":80,\"energy\":3,\"max_energy\":3,\"block\":5},\"hand\":[{\"name\":\"WHIRLWIND\",\"cost\":\"X\",\"upgraded\":false},{\"name\":\"DEFEND\",\"cost\":1,\"upgraded\":false},{\"name\":\"BASH\",\"cost\":2,\"upgraded\":false}],\"enemies\":[{\"name\":\"TEST SLIME\",\"hp\":23,\"max_hp\":30,\"block\":0,\"intent\":\"ATTACK 10 x 1\",\"intent_damage\":10,\"intent_hits\":1}],\"uncertainties\":[]}",
+    "elapsed_ms": 2650.0
+  },
+  "checks": [
+    {
+      "field": "scene",
+      "expected": "combat",
+      "actual": "combat",
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "turn",
+      "expected": 2,
+      "actual": 2,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.hp",
+      "expected": 68,
+      "actual": 68,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.max_hp",
+      "expected": 80,
+      "actual": 80,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.energy",
+      "expected": 3,
+      "actual": 3,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.max_energy",
+      "expected": 3,
+      "actual": 3,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.block",
+      "expected": 5,
+      "actual": 5,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.hp",
+      "expected": 23,
+      "actual": 23,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.max_hp",
+      "expected": 30,
+      "actual": 30,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.intent_damage",
+      "expected": 10,
+      "actual": 10,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.intent_hits",
+      "expected": 1,
+      "actual": 1,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "hand.0.name",
+      "expected": "WHIRLWIND",
+      "actual": "WHIRLWIND",
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "hand.0.cost",
+      "expected": "X",
+      "actual": "X",
+      "present": true,
+      "passed": true
+    }
+  ],
+  "review": {
+    "basis": "固定标签规则评分；真实图标签AI辅助目视核对，待用户确认",
+    "user_confirmed": false
+  }
+}

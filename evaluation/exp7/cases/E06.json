@@ -1,0 +1,18 @@
+{
+  "id": "E06",
+  "kind": "synthetic",
+  "scenario": "hud_only",
+  "expected": {
+    "turn": 2,
+    "player.hp": 68,
+    "player.max_hp": 80,
+    "player.energy": 3,
+    "player.max_energy": 3,
+    "player.block": 5,
+    "hand": null,
+    "enemies": null
+  },
+  "image": "inputs/E06.png",
+  "sha256": "28098f838d957725dfdacb4d4a200d3509f51ba2e989b5d726835e93c3753c28",
+  "label_source": "合成图生成参数"
+}

@@ -231,6 +231,36 @@ def cmd_agent(args, service):
     return code if result.ok else 2
 
 
+def cmd_vision(args, service):
+    """Pixel-only screenshot recognition; no game state, knowledge or run history."""
+    from .app.vision_service import VisionService
+    result = VisionService(out_dir=args.vision_dir).recognize(
+        args.image, timeout_s=args.timeout, save=not args.no_save, game=args.game)
+    _print(result)
+    return 0 if result["ok"] else 2
+
+
+def cmd_windows(args, service):
+    from .app.window_vision_service import WindowVisionService
+    from .capture import CaptureError
+    window_service = WindowVisionService()
+    try:
+        windows = window_service.list_windows()
+        if args.list:
+            return _print({"ok": True, "windows": [w.to_dict() for w in windows]})
+        candidates = [w for w in windows if w.hwnd == args.hwnd] if args.hwnd else [w for w in windows if w.supported]
+        if len(candidates) != 1:
+            _print({"ok": False, "error": {"code": "window_selection_required",
+                    "message": "无法唯一确定游戏窗口，请先用windows --list查看，再用--hwnd指定"}})
+            return 2
+        result = window_service.run_once(candidates[0], game=args.game, recognize=args.recognize)
+        _print(result)
+        return 0 if result["ok"] else 2
+    except CaptureError as exc:
+        _print({"ok": False, "error": {"code": exc.code, "message": str(exc)}})
+        return 2
+
+
 def _add_state_args(parser):
     parser.add_argument("--hp", type=int, help="玩家当前血量")
     parser.add_argument("--max-hp", type=int, help="玩家最大血量（默认 80）")
@@ -241,7 +271,7 @@ def _add_state_args(parser):
 
 
 def build_parser():
-    parser = argparse.ArgumentParser(prog="guanyi", description="观弈：离散决策游戏复盘助手（实验4 非AI 闭环）")
+    parser = argparse.ArgumentParser(prog="guanyi", description="观弈：截图识别与离散决策游戏复盘助手")
     parser.add_argument("--root", default="data/runs", help="运行记录目录（默认 data/runs/）")
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -315,21 +345,41 @@ def build_parser():
     p.add_argument("--confirm-timeout", type=float, default=30.0, help="等待确认的秒数（超时视为拒绝）")
     p.add_argument("--tools", action="store_true", help="只列出工具白名单与参数 Schema")
     p.set_defaults(func=cmd_agent)
+
+    p = sub.add_parser("vision", help="识别指定游戏截图，输出结构化局面（会请求模型）")
+    p.add_argument("--image", required=True, help="只包含游戏画面的本地图片路径")
+    p.add_argument("--timeout", type=float, default=60.0, help="含重试的最长等待，默认60秒")
+    p.add_argument("--vision-dir", default="data/vision", help="截图与识别记录保存目录")
+    p.add_argument("--no-save", action="store_true", help="仅输出结果，不在本地保存截图或记录")
+    p.add_argument("--game", choices=["auto", "generic", "sts2"], default="auto", help="游戏适配，默认按图片可见标题选择")
+    p.set_defaults(func=cmd_vision)
+
+    p = sub.add_parser("windows", help="检测游戏窗口，默认只采集预览；--recognize才请求模型")
+    p.add_argument("--list", action="store_true", help="仅列出窗口与进程元信息")
+    p.add_argument("--hwnd", type=lambda value: int(value, 0), help="选择窗口句柄，支持十进制和0x十六进制")
+    p.add_argument("--recognize", action="store_true", help="采集后实际请求模型")
+    p.add_argument("--game", choices=["auto", "generic", "sts2"], default="auto")
+    p.set_defaults(func=cmd_windows)
     return parser
 
 
 def main(argv=None):
     args = build_parser().parse_args(argv)
-    service = SessionService(JsonlStore(args.root))
     try:
+        # Recognition is independent of run storage: do not even initialize it.
+        if args.command in ("vision", "windows"):
+            return args.func(args, None)
+        service = SessionService(JsonlStore(args.root))
         return args.func(args, service)
     except GuanyiError as exc:
-        service.logger(getattr(args, "run", None)).warning(
-            "命令失败 code=%s message=%s details=%s", exc.code, exc.message, exc.details)
+        if args.command != "vision" and "service" in locals():
+            service.logger(getattr(args, "run", None)).warning(
+                "命令失败 code=%s message=%s details=%s", exc.code, exc.message, exc.details)
         _print({"ok": False, "error": exc.to_dict(), "zh": zh_message(exc.code)})
         return 2
     except Exception as exc:  # 兜底：不把栈丢给用户，但完整写进日志
-        service.logger(getattr(args, "run", None)).exception("未预期的异常：%s", exc)
+        if args.command != "vision" and "service" in locals():
+            service.logger(getattr(args, "run", None)).exception("未预期的异常：%s", exc)
         _print({"ok": False, "error": {"code": "internal_error", "message": "程序内部错误：%s" % exc}})
         return 3
 

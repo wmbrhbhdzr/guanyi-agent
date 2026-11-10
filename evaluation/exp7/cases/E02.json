@@ -1,0 +1,23 @@
+{
+  "id": "E02",
+  "kind": "synthetic",
+  "scenario": "zero_energy",
+  "expected": {
+    "scene": "combat",
+    "turn": 2,
+    "player.hp": 10,
+    "player.max_hp": 80,
+    "player.energy": 0,
+    "player.max_energy": 3,
+    "player.block": 0,
+    "enemies.0.hp": 23,
+    "enemies.0.max_hp": 30,
+    "enemies.0.intent_damage": 10,
+    "enemies.0.intent_hits": 1,
+    "hand.0.name": "STRIKE",
+    "hand.0.cost": 1
+  },
+  "image": "inputs/E02.png",
+  "sha256": "5679364280807bf56e234d08e7076ce36b1ad38ac3f0aaab5fff33c3f92de39e",
+  "label_source": "合成图生成参数"
+}

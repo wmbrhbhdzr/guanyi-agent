@@ -1,0 +1,24 @@
+{
+  "baseline": {
+    "cases": 10,
+    "case_pass": 8,
+    "field_pass": 91,
+    "fields": 129,
+    "median_ms": 3445.55,
+    "max_ms": 26087.0,
+    "estimated_yuan": 0.07195008,
+    "tokens": 17146,
+    "api_attempts": 9
+  },
+  "revised": {
+    "cases": 10,
+    "case_pass": 10,
+    "field_pass": 129,
+    "fields": 129,
+    "median_ms": 2496.8,
+    "max_ms": 8911.1,
+    "estimated_yuan": 0.0470396,
+    "tokens": 26823,
+    "api_attempts": 18
+  }
+}

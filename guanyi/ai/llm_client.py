@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""云端模型调用（实验5 §2.1）：文本 chat completion，只用标准库。
+"""云端模型调用：文本/图像 chat completion，只用标准库。
 
 - 密钥与地址从项目根目录 `.env` 读取（`DEEPSEEK_API_KEY` / `DEEPSEEK_BASE_URL`），**不打印密钥**；
 - 参数：`model`、`temperature`、`max_tokens`、`timeout`、`retries`（网络类错误才重试，带退避）；
@@ -105,7 +105,7 @@ class LlmResult:
 
 
 class LlmClient:
-    """文本模型客户端（OpenAI 兼容的 chat/completions）。"""
+    """文本与多模态模型客户端（OpenAI 兼容的 chat/completions）。"""
 
     def __init__(self, model: Optional[str] = None, base_url: Optional[str] = None,
                  api_key: Optional[str] = None, timeout: int = 60, retries: int = 2,
@@ -135,6 +135,10 @@ class LlmClient:
             "max_tokens": overrides.get("max_tokens", self.max_tokens),
             "stream": False,
         }
+        if "thinking" in overrides:
+            payload["thinking"] = overrides["thinking"]
+        if "response_format" in overrides:
+            payload["response_format"] = overrides["response_format"]
         tools = overrides.get("tools")
         if tools:
             payload["tools"] = tools

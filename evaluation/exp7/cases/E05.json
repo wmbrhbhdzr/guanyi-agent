@@ -1,0 +1,23 @@
+{
+  "id": "E05",
+  "kind": "synthetic",
+  "scenario": "hidden_hud",
+  "expected": {
+    "scene": "combat",
+    "turn": null,
+    "player.hp": null,
+    "player.max_hp": null,
+    "player.energy": null,
+    "player.max_energy": null,
+    "player.block": null,
+    "enemies.0.hp": 23,
+    "enemies.0.max_hp": 30,
+    "enemies.0.intent_damage": 10,
+    "enemies.0.intent_hits": 1,
+    "hand.0.name": "STRIKE",
+    "hand.0.cost": 1
+  },
+  "image": "inputs/E05.png",
+  "sha256": "c12b2b0a59f389a76794279ac2a01dcd942c67a190ba4d726e9ad407cccca17b",
+  "label_source": "合成图生成参数"
+}

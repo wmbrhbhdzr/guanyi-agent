@@ -1,0 +1,9 @@
+{
+  "id": "E08",
+  "kind": "synthetic",
+  "scenario": "blank_invalid_input",
+  "expected_error": "invalid_image",
+  "image": "inputs/E08.png",
+  "sha256": "350251891902018fc71aa65c1c664254f90f3a176cea756003a44b17b8011c4a",
+  "label_source": "合成图生成参数"
+}

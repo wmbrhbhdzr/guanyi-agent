@@ -1,0 +1,163 @@
+{
+  "version": "revised",
+  "case_id": "E07",
+  "kind": "synthetic",
+  "scenario": "non_combat_out_of_scope",
+  "timestamp": "2026-11-10T09:39:57.670286+08:00",
+  "result": {
+    "ok": true,
+    "status": "partial",
+    "observation": {
+      "scene": "menu",
+      "turn": null,
+      "player": {
+        "hp": null,
+        "max_hp": null,
+        "energy": null,
+        "max_energy": null,
+        "block": null,
+        "statuses": null
+      },
+      "hand": null,
+      "enemies": null,
+      "uncertainties": [
+        "画面为设置菜单，未显示战斗、地图或奖励信息",
+        "未显示玩家生命、能量、格挡或状态",
+        "未显示手牌或敌人"
+      ],
+      "tooltips": []
+    },
+    "summary": "画面：菜单　回合：未识别\n玩家血量：未识别 / 未识别　能量：未识别 / 未识别　格挡：未识别\n玩家增减益：区域未识别\n手牌：区域未识别\n敌人：区域未识别\n\n待核对：\n· 画面为设置菜单，未显示战斗、地图或奖励信息\n· 未显示玩家生命、能量、格挡或状态\n· 未显示手牌或敌人",
+    "warnings": [
+      "画面为设置菜单，未显示战斗、地图或奖励信息",
+      "未显示玩家生命、能量、格挡或状态",
+      "未显示手牌或敌人"
+    ],
+    "error": null,
+    "prompt_version": "vision-v4",
+    "timestamp": "2026-11-10T09:39:55+08:00",
+    "request_id": "vision-e3e962ed98d84ddaad535d18c692973c",
+    "usage": {
+      "prompt_tokens": 1124,
+      "completion_tokens": 107,
+      "total_tokens": 1231,
+      "prompt_tokens_details": {
+        "cached_tokens": 512
+      },
+      "prompt_cache_hit_tokens": 512,
+      "prompt_cache_miss_tokens": 612
+    },
+    "cost": {
+      "tier": "peak",
+      "input_cached_tokens": 512,
+      "input_miss_tokens": 612,
+      "output_tokens": 107,
+      "cost_input_cached_yuan": 2.048e-05,
+      "cost_input_miss_yuan": 0.001224,
+      "cost_output_yuan": 0.000856,
+      "cost_total_yuan": 0.00315448
+    },
+    "model": "deepseek-flash",
+    "saved_path": "C:\\Code\\软件应用开发实践\\data\\vision\\vision-e3e962ed98d84ddaad535d18c692973c\\result.json",
+    "image_path": "C:\\Code\\软件应用开发实践\\data\\vision\\vision-e3e962ed98d84ddaad535d18c692973c\\input.png",
+    "elapsed_ms": 2581.6,
+    "game_profile": "generic",
+    "requested_profile": "auto",
+    "request_settings": {
+      "model": "deepseek-flash",
+      "max_tokens": 4096,
+      "temperature": 0,
+      "thinking": "disabled"
+    },
+    "image": {
+      "source_name": "E07.png",
+      "original_size": [
+        1000,
+        650
+      ],
+      "submitted_size": [
+        1000,
+        650
+      ],
+      "source_sha256": "ee061b70da3518a09e94dd66acb8472d30ba7d37ef4a7f54748a2d63790e93a7",
+      "submitted_sha256": "ee061b70da3518a09e94dd66acb8472d30ba7d37ef4a7f54748a2d63790e93a7",
+      "submitted_bytes": 11376
+    },
+    "profile_detection": {
+      "visible_title": "",
+      "reason": "标题未确认，使用通用模式",
+      "usage": {
+        "prompt_tokens": 491,
+        "completion_tokens": 9,
+        "total_tokens": 500,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 491
+      },
+      "cost": {
+        "tier": "peak",
+        "input_cached_tokens": 0,
+        "input_miss_tokens": 491,
+        "output_tokens": 9,
+        "cost_input_cached_yuan": 0.0,
+        "cost_input_miss_yuan": 0.000982,
+        "cost_output_yuan": 7.2e-05,
+        "cost_total_yuan": 0.001054
+      }
+    },
+    "references": [],
+    "latency_ms": 1158.3,
+    "attempts": 1,
+    "finish_reason": "stop",
+    "recognition_cost": {
+      "tier": "peak",
+      "input_cached_tokens": 512,
+      "input_miss_tokens": 612,
+      "output_tokens": 107,
+      "cost_input_cached_yuan": 2.048e-05,
+      "cost_input_miss_yuan": 0.001224,
+      "cost_output_yuan": 0.000856,
+      "cost_total_yuan": 0.00210048
+    },
+    "raw_response": "{\"scene\": \"menu\", \"turn\": null, \"player\": {\"hp\": null, \"max_hp\": null, \"energy\": null, \"max_energy\": null, \"block\": null, \"statuses\": null}, \"hand\": null, \"enemies\": null, \"uncertainties\": [\"画面为设置菜单，未显示战斗、地图或奖励信息\", \"未显示玩家生命、能量、格挡或状态\", \"未显示手牌或敌人\"], \"tooltips\": []}",
+    "normalizations": []
+  },
+  "checks": [
+    {
+      "field": "player.hp",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.energy",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "turn",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "scene",
+      "allowed": [
+        "menu",
+        "unknown"
+      ],
+      "actual": "menu",
+      "passed": true
+    }
+  ],
+  "review": {
+    "basis": "固定标签规则评分；真实图标签AI辅助目视核对，待用户确认",
+    "user_confirmed": false
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "guanyi/capture/windows.py": "3fd1d513998b634cbdd2004c5de7e7a525e8271fa823a9fa0e3609cf9f95cf65",
+  "guanyi/capture/__init__.py": "daaf6e756afb354ef01a8aa5ecc0f0cbddaef34b6bb3bdd4f232d104427a1389",
+  "guanyi/app/window_vision_service.py": "c756ae1c74a7487a7b03e9245df2ae142192e48382e60ae591d1590658de9175",
+  "guanyi/ui/vision_tab.py": "09549e81a08d149fc8856c4df5cb03783ad1b1948d8c1e7712955cd68bdf196d"
+}

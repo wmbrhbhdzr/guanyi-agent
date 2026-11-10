@@ -1,0 +1,23 @@
+{
+  "id": "E04",
+  "kind": "synthetic",
+  "scenario": "multi_hit",
+  "expected": {
+    "scene": "combat",
+    "turn": 2,
+    "player.hp": 68,
+    "player.max_hp": 80,
+    "player.energy": 3,
+    "player.max_energy": 3,
+    "player.block": 5,
+    "enemies.0.hp": 23,
+    "enemies.0.max_hp": 30,
+    "enemies.0.intent_damage": 2,
+    "enemies.0.intent_hits": 3,
+    "hand.0.name": "STRIKE",
+    "hand.0.cost": 1
+  },
+  "image": "inputs/E04.png",
+  "sha256": "5de23e1f85cc9796073cf0c2d27899eabf966e2018103e005b818d95a83d07b7",
+  "label_source": "合成图生成参数"
+}

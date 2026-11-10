@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""界面冒烟测试：不靠人工点击，用程序把三个页面驱动跑通一遍。
+"""界面冒烟测试：不靠人工点击，用程序把六个页面驱动跑通一遍。
 
 做这些事：新建对局 → 生成局面摘要 → 规则基线给建议 → 记录两笔（第 2 笔建议与实际不一致）
 → 读记录列表 → 生成复盘报告，并打印每一步的界面状态文本。
@@ -12,6 +12,9 @@
 import os
 import shutil
 import sys
+import copy
+import json
+import time
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -25,6 +28,9 @@ import tkinter.messagebox as messagebox  # noqa: E402
 from guanyi.ai.llm_client import LlmResult        # noqa: E402
 from guanyi.app.qa_service import QaService        # noqa: E402
 from guanyi.app.service import SessionService      # noqa: E402
+from guanyi.app.vision_service import VisionService  # noqa: E402
+from guanyi.vision.schema import OBSERVATION_EXAMPLE  # noqa: E402
+from scripts.vision_demo import make_frame          # noqa: E402
 from guanyi.data.sample import seed_sample_run         # noqa: E402
 from guanyi.data.store import JsonlStore           # noqa: E402
 from guanyi.ui.main_window import GuanyiApp        # noqa: E402
@@ -62,6 +68,16 @@ class FakeAgentClient:
                          cost={"cost_total_yuan": 0.0002}, latency_ms=9.0, model="fake")
 
 
+class FakeVisionClient:
+    def chat(self, messages, **kwargs):
+        observation = copy.deepcopy(OBSERVATION_EXAMPLE)
+        observation.update(turn=2, hand=[{"name": "STRIKE", "cost": 1, "upgraded": False}],
+                           enemies=[{"name": "TEST SLIME", "hp": 23, "max_hp": 30, "block": 0,
+                                     "intent": "ATTACK 10 x 1", "intent_damage": 10, "intent_hits": 1}])
+        observation["player"].update(hp=68, max_hp=80, energy=3, max_energy=3, block=5)
+        return LlmResult(ok=True, text=json.dumps(observation), model="fake", finish_reason="stop")
+
+
 def main():
     # 无人值守：对话框改为打印
     messagebox.showwarning = lambda title, msg, **kw: print("[提示框] %s / %s" % (title, msg.replace("\n", " ")))
@@ -72,7 +88,8 @@ def main():
     seed_sample_run(store, "run-0001")          # Agent 页要分析样例行，先备好数据
     service = SessionService(store)
     qa = QaService(kb_dir="knowledge", client=FakeQaClient())
-    app = GuanyiApp(service, qa=qa, agent_client=FakeAgentClient())
+    vision = VisionService(client=FakeVisionClient(), out_dir=os.path.join(ROOT, "vision"))
+    app = GuanyiApp(service, qa=qa, agent_client=FakeAgentClient(), vision=vision)
     app.update()
     print("⓪ 启动时的局面摘要（应自动生成，不为空）：%s" % (app.state_entry.get() or "（空！）"))
 
@@ -154,8 +171,20 @@ def main():
     for line in log_lines[:4]:
         print("     %s" % line)
 
+    # ⑫ 截图识别页：先预览，再通过后台线程请求假模型。
+    image = make_frame(os.path.join(ROOT, "vision-frame.png"))
+    app.nb.select(app.vision_panel)
+    assert app.vision_panel.set_image(image), "截图预览失败"
+    app.vision_panel.recognize()
+    deadline = time.monotonic() + 5
+    while app.vision_panel.busy and time.monotonic() < deadline:
+        app.update()
+        time.sleep(.01)
+    assert not app.vision_panel.busy and app.vision_panel.result["ok"], "截图识别页运行失败"
+    print("⑫ 截图识别页：%s" % app.vision_panel.status_var.get())
+    print("   %s" % app.vision_panel.summary_text.get("1.0", "end").strip().replace("\n", " ｜ "))
     app.destroy()
-    print("\n界面冒烟测试完成：五个页面均可驱动，无异常抛出。")
+    print("\n界面冒烟测试完成：六个页面均可驱动，无异常抛出。")
 
 
 if __name__ == "__main__":

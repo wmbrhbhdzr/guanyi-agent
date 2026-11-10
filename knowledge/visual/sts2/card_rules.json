@@ -1,0 +1,13 @@
+[
+  {
+    "id": "CLUMSY",
+    "name": "笨拙",
+    "card_type": "诅咒",
+    "cost": null,
+    "playable": false,
+    "keywords": ["不能被打出", "虚无"],
+    "source": "https://spire-codex.com/api/cards?lang=zhs",
+    "source_keywords_key": ["Unplayable", "Ethereal"],
+    "note": "原始费用-1表示非普通能量费用，不是X，也不是1。仅规范已识别出的卡名，暂未覆盖临时可打出效果。"
+  }
+]

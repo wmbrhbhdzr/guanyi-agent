@@ -1,0 +1,119 @@
+{
+  "version": "baseline",
+  "case_id": "E06",
+  "kind": "synthetic",
+  "scenario": "hud_only",
+  "timestamp": "2026-11-10T09:38:48.670202+08:00",
+  "result": {
+    "ok": true,
+    "status": "parsed",
+    "observation": {
+      "scene": "combat",
+      "turn": 2,
+      "player": {
+        "hp": 68,
+        "max_hp": 80,
+        "energy": 3,
+        "max_energy": 3,
+        "block": 5
+      },
+      "hand": null,
+      "enemies": null,
+      "uncertainties": [
+        "手牌未显示",
+        "敌人未显示"
+      ]
+    },
+    "error": null,
+    "usage": {
+      "prompt_tokens": 646,
+      "completion_tokens": 512,
+      "total_tokens": 1158,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 450
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 390
+    },
+    "cost": {
+      "tier": "peak",
+      "input_cached_tokens": 256,
+      "input_miss_tokens": 390,
+      "output_tokens": 512,
+      "cost_input_cached_yuan": 1.024e-05,
+      "cost_input_miss_yuan": 0.00078,
+      "cost_output_yuan": 0.004096,
+      "cost_total_yuan": 0.00488624
+    },
+    "attempts": 1,
+    "model": "deepseek-flash",
+    "finish_reason": "stop",
+    "raw_response": "{\"scene\":\"combat\",\"turn\":2,\"player\":{\"hp\":68,\"max_hp\":80,\"energy\":3,\"max_energy\":3,\"block\":5},\"hand\":null,\"enemies\":null,\"uncertainties\":[\"手牌未显示\",\"敌人未显示\"]}",
+    "elapsed_ms": 3905.8
+  },
+  "checks": [
+    {
+      "field": "turn",
+      "expected": 2,
+      "actual": 2,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.hp",
+      "expected": 68,
+      "actual": 68,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.max_hp",
+      "expected": 80,
+      "actual": 80,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.energy",
+      "expected": 3,
+      "actual": 3,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.max_energy",
+      "expected": 3,
+      "actual": 3,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.block",
+      "expected": 5,
+      "actual": 5,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "hand",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    }
+  ],
+  "review": {
+    "basis": "固定标签规则评分；真实图标签AI辅助目视核对，待用户确认",
+    "user_confirmed": false
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "version": "baseline",
+  "case_id": "E07",
+  "kind": "synthetic",
+  "scenario": "non_combat_out_of_scope",
+  "timestamp": "2026-11-10T09:38:50.187362+08:00",
+  "result": {
+    "ok": true,
+    "status": "parsed",
+    "observation": {
+      "scene": "menu",
+      "turn": null,
+      "player": {
+        "hp": null,
+        "max_hp": null,
+        "energy": null,
+        "max_energy": null,
+        "block": null
+      },
+      "hand": null,
+      "enemies": null,
+      "uncertainties": [
+        "画面为设置菜单，未显示战斗状态、玩家数值、手牌或敌人信息"
+      ]
+    },
+    "error": null,
+    "usage": {
+      "prompt_tokens": 842,
+      "completion_tokens": 122,
+      "total_tokens": 964,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 41
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 586
+    },
+    "cost": {
+      "tier": "peak",
+      "input_cached_tokens": 256,
+      "input_miss_tokens": 586,
+      "output_tokens": 122,
+      "cost_input_cached_yuan": 1.024e-05,
+      "cost_input_miss_yuan": 0.001172,
+      "cost_output_yuan": 0.000976,
+      "cost_total_yuan": 0.00215824
+    },
+    "attempts": 1,
+    "model": "deepseek-flash",
+    "finish_reason": "stop",
+    "raw_response": "{\"scene\": \"menu\", \"turn\": null, \"player\": {\"hp\": null, \"max_hp\": null, \"energy\": null, \"max_energy\": null, \"block\": null}, \"hand\": null, \"enemies\": null, \"uncertainties\": [\"画面为设置菜单，未显示战斗状态、玩家数值、手牌或敌人信息\"]}",
+    "elapsed_ms": 1515.8
+  },
+  "checks": [
+    {
+      "field": "player.hp",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.energy",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "turn",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "scene",
+      "allowed": [
+        "menu",
+        "unknown"
+      ],
+      "actual": "menu",
+      "passed": true
+    }
+  ],
+  "review": {
+    "basis": "固定标签规则评分；真实图标签AI辅助目视核对，待用户确认",
+    "user_confirmed": false
+  }
+}

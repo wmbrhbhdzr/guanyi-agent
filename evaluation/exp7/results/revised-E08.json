@@ -1,0 +1,47 @@
+{
+  "version": "revised",
+  "case_id": "E08",
+  "kind": "synthetic",
+  "scenario": "blank_invalid_input",
+  "timestamp": "2026-11-10T09:39:57.682175+08:00",
+  "result": {
+    "ok": false,
+    "status": "failed",
+    "observation": null,
+    "summary": "",
+    "warnings": [],
+    "error": {
+      "code": "invalid_image",
+      "message": "图片接近纯黑或纯白，没有可识别内容，请换一张游戏截图"
+    },
+    "prompt_version": "vision-v4",
+    "timestamp": "2026-11-10T09:39:57+08:00",
+    "request_id": "vision-a0aef30fc85c4a9a9d2e006c07f5284b",
+    "usage": {},
+    "cost": {},
+    "model": "",
+    "saved_path": null,
+    "image_path": null,
+    "elapsed_ms": 10.4,
+    "game_profile": "auto",
+    "requested_profile": "auto",
+    "request_settings": {
+      "model": "deepseek-flash",
+      "max_tokens": 4096,
+      "temperature": 0,
+      "thinking": "disabled"
+    }
+  },
+  "checks": [
+    {
+      "field": "error.code",
+      "expected": "invalid_image",
+      "actual": "invalid_image",
+      "passed": true
+    }
+  ],
+  "review": {
+    "basis": "固定标签规则评分；真实图标签AI辅助目视核对，待用户确认",
+    "user_confirmed": false
+  }
+}

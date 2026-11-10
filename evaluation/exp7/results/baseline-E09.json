@@ -1,0 +1,296 @@
+{
+  "version": "baseline",
+  "case_id": "E09",
+  "kind": "real",
+  "scenario": "battle",
+  "timestamp": "2026-11-10T09:39:14.318758+08:00",
+  "result": {
+    "ok": true,
+    "status": "parsed",
+    "observation": {
+      "scene": "combat",
+      "turn": 1,
+      "player": {
+        "hp": 107,
+        "max_hp": 107,
+        "energy": 3,
+        "max_energy": 3,
+        "block": null
+      },
+      "hand": [
+        {
+          "name": "打击",
+          "cost": 1,
+          "upgraded": null
+        },
+        {
+          "name": "笨拙",
+          "cost": 1,
+          "upgraded": null
+        },
+        {
+          "name": "打击",
+          "cost": 1,
+          "upgraded": null
+        },
+        {
+          "name": "打击",
+          "cost": 1,
+          "upgraded": null
+        },
+        {
+          "name": "打击",
+          "cost": 1,
+          "upgraded": null
+        }
+      ],
+      "enemies": [
+        {
+          "name": null,
+          "hp": 24,
+          "max_hp": 24,
+          "block": 9,
+          "intent": "攻击",
+          "intent_damage": 1,
+          "intent_hits": 3
+        },
+        {
+          "name": null,
+          "hp": 26,
+          "max_hp": 26,
+          "block": 9,
+          "intent": "攻击",
+          "intent_damage": 8,
+          "intent_hits": null
+        },
+        {
+          "name": null,
+          "hp": 25,
+          "max_hp": 25,
+          "block": 9,
+          "intent": "增益",
+          "intent_damage": null,
+          "intent_hits": null
+        }
+      ],
+      "uncertainties": [
+        "敌人名称未显示",
+        "敌人下方数字9按格挡图标记录，含义不完全确定",
+        "手牌“笨拙”卡名与诅咒标识辨认可能有误",
+        "所有卡牌未明确显示升级标记",
+        "中间敌人的攻击次数未显示",
+        "玩家格挡未显示"
+      ]
+    },
+    "error": null,
+    "usage": {
+      "prompt_tokens": 1450,
+      "completion_tokens": 2451,
+      "total_tokens": 3901,
+      "prompt_tokens_details": {
+        "cached_tokens": 1280
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 2157
+      },
+      "prompt_cache_hit_tokens": 1280,
+      "prompt_cache_miss_tokens": 170
+    },
+    "cost": {
+      "tier": "peak",
+      "input_cached_tokens": 1280,
+      "input_miss_tokens": 170,
+      "output_tokens": 2451,
+      "cost_input_cached_yuan": 5.12e-05,
+      "cost_input_miss_yuan": 0.00034,
+      "cost_output_yuan": 0.019608,
+      "cost_total_yuan": 0.0199992
+    },
+    "attempts": 1,
+    "model": "deepseek-flash",
+    "finish_reason": "stop",
+    "raw_response": "{\"scene\":\"combat\",\"turn\":1,\"player\":{\"hp\":107,\"max_hp\":107,\"energy\":3,\"max_energy\":3,\"block\":null},\"hand\":[{\"name\":\"打击\",\"cost\":1,\"upgraded\":null},{\"name\":\"笨拙\",\"cost\":1,\"upgraded\":null},{\"name\":\"打击\",\"cost\":1,\"upgraded\":null},{\"name\":\"打击\",\"cost\":1,\"upgraded\":null},{\"name\":\"打击\",\"cost\":1,\"upgraded\":null}],\"enemies\":[{\"name\":null,\"hp\":24,\"max_hp\":24,\"block\":9,\"intent\":\"攻击\",\"intent_damage\":1,\"intent_hits\":3},{\"name\":null,\"hp\":26,\"max_hp\":26,\"block\":9,\"intent\":\"攻击\",\"intent_damage\":8,\"intent_hits\":null},{\"name\":null,\"hp\":25,\"max_hp\":25,\"block\":9,\"intent\":\"增益\",\"intent_damage\":null,\"intent_hits\":null}],\"uncertainties\":[\"敌人名称未显示\",\"敌人下方数字9按格挡图标记录，含义不完全确定\",\"手牌“笨拙”卡名与诅咒标识辨认可能有误\",\"所有卡牌未明确显示升级标记\",\"中间敌人的攻击次数未显示\",\"玩家格挡未显示\"]}",
+    "elapsed_ms": 24118.4
+  },
+  "checks": [
+    {
+      "field": "scene",
+      "expected": "combat",
+      "actual": "combat",
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "turn",
+      "expected": 1,
+      "actual": 1,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.hp",
+      "expected": 107,
+      "actual": 107,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.max_hp",
+      "expected": 107,
+      "actual": 107,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.energy",
+      "expected": 3,
+      "actual": 3,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.max_energy",
+      "expected": 3,
+      "actual": 3,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.block",
+      "expected": 0,
+      "actual": null,
+      "present": true,
+      "passed": false
+    },
+    {
+      "field": "hand.1.name",
+      "expected": "笨拙",
+      "actual": "笨拙",
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "hand.1.cost",
+      "expected": null,
+      "actual": 1,
+      "present": true,
+      "passed": false
+    },
+    {
+      "field": "enemies.0.hp",
+      "expected": 24,
+      "actual": 24,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.1.hp",
+      "expected": 26,
+      "actual": 26,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.2.hp",
+      "expected": 25,
+      "actual": 25,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.intent_damage",
+      "expected": 1,
+      "actual": 1,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.intent_hits",
+      "expected": 3,
+      "actual": 3,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.1.intent_damage",
+      "expected": 8,
+      "actual": 8,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.1.intent_hits",
+      "expected": 1,
+      "actual": null,
+      "present": true,
+      "passed": false
+    },
+    {
+      "field": "enemies.0.block",
+      "expected": 0,
+      "actual": 9,
+      "present": true,
+      "passed": false
+    },
+    {
+      "field": "enemies.0.statuses.0.name",
+      "expected": "难以杀灭",
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.0.statuses.0.amount",
+      "expected": 9,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.1.block",
+      "expected": 0,
+      "actual": 9,
+      "present": true,
+      "passed": false
+    },
+    {
+      "field": "enemies.1.statuses.0.name",
+      "expected": "难以杀灭",
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.1.statuses.0.amount",
+      "expected": 9,
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.2.block",
+      "expected": 0,
+      "actual": 9,
+      "present": true,
+      "passed": false
+    },
+    {
+      "field": "enemies.2.statuses.0.name",
+      "expected": "难以杀灭",
+      "actual": null,
+      "present": false,
+      "passed": false
+    },
+    {
+      "field": "enemies.2.statuses.0.amount",
+      "expected": 9,
+      "actual": null,
+      "present": false,
+      "passed": false
+    }
+  ],
+  "review": {
+    "basis": "固定标签规则评分；真实图标签AI辅助目视核对，待用户确认",
+    "user_confirmed": false
+  }
+}

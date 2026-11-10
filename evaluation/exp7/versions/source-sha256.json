@@ -1,0 +1,13 @@
+{
+  "guanyi/vision/config.py": "e8ec7b8c4e30950c01752174e74a3e8d4582490125918c44389091a811bddd7e",
+  "guanyi/vision/diagnostics.py": "191f94d2c45004db88f39417295a57c1abb6fd1e576063432abed4484f43422e",
+  "guanyi/vision/game_detection.py": "2ce6273000a16bd2dad70a4317637f1fc5a38764fa079ef163cfd60be962105a",
+  "guanyi/vision/images.py": "7a8a7a42e8f1f997e5768b4a788adf3d9594e7cc0d96eedf5f19333472c1eaca",
+  "guanyi/vision/profiles.py": "163877f47e6d9aabc6becf736f44d372f84fcbee1a8d57e3076014af1712e685",
+  "guanyi/vision/prompts.py": "017755d576c6b7982aaa299d828bac82bc28e6b09157e534fc1cbe316e50503e",
+  "guanyi/vision/schema.py": "b182539e493e9bcc0cf69b83e5aaf7e508d5ea8c9d350a228a634bbc8589cc32",
+  "guanyi/vision/__init__.py": "5baaa9e27457c8a3509640a56ffcda4a06738d5c58b39e9adf9a2594e7ca20ef",
+  "guanyi/app/vision_service.py": "26e22130b6f18b7acba4ea50d2a04c314fb37ba913fb3a92e9f0cd0af38739ba",
+  "scripts/run_exp7_eval.py": "f3cf2b89519679ef69a3a613c9631a5dce77d3c9a42fb0a094fa27f3bfc61b8f",
+  "scripts/build_exp7_evalset.py": "82cbb94f6b3fafc0cb10e1e65d785fbb42e0a15150143c300c8994d6c73ee617"
+}

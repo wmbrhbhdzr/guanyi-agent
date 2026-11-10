@@ -1,0 +1,254 @@
+{
+  "version": "revised",
+  "case_id": "E05",
+  "kind": "synthetic",
+  "scenario": "hidden_hud",
+  "timestamp": "2026-11-10T09:39:52.508911+08:00",
+  "result": {
+    "ok": true,
+    "status": "partial",
+    "observation": {
+      "scene": "combat",
+      "turn": null,
+      "player": {
+        "hp": null,
+        "max_hp": null,
+        "energy": null,
+        "max_energy": null,
+        "block": null,
+        "statuses": null
+      },
+      "hand": [
+        {
+          "name": "STRIKE",
+          "cost": 1,
+          "upgraded": false
+        },
+        {
+          "name": "DEFEND",
+          "cost": 1,
+          "upgraded": false
+        },
+        {
+          "name": "BASH",
+          "cost": 2,
+          "upgraded": false
+        }
+      ],
+      "enemies": [
+        {
+          "name": "TEST SLIME",
+          "hp": 23,
+          "max_hp": 30,
+          "block": 0,
+          "intent": "ATTACK",
+          "intent_damage": 10,
+          "intent_hits": 1,
+          "statuses": null
+        }
+      ],
+      "uncertainties": [
+        "玩家HUD被遮挡，生命、能量、格挡和状态不可见",
+        "回合数未显示",
+        "敌人血条下的状态图标未显示"
+      ],
+      "tooltips": []
+    },
+    "summary": "画面：战斗　回合：未识别\n玩家血量：未识别 / 未识别　能量：未识别 / 未识别　格挡：未识别\n玩家增减益：区域未识别\n手牌：STRIKE（费用1）、DEFEND（费用1）、BASH（费用2）\n敌人1：TEST SLIME　血量23/30　格挡0\n    意图：ATTACK；单次伤害10，次数1\n    增减益：区域未识别\n\n待核对：\n· 玩家HUD被遮挡，生命、能量、格挡和状态不可见\n· 回合数未显示\n· 敌人血条下的状态图标未显示\n· 玩家血量未识别\n· 玩家最大血量未识别\n· 玩家能量未识别",
+    "warnings": [
+      "玩家HUD被遮挡，生命、能量、格挡和状态不可见",
+      "回合数未显示",
+      "敌人血条下的状态图标未显示",
+      "玩家血量未识别",
+      "玩家最大血量未识别",
+      "玩家能量未识别"
+    ],
+    "error": null,
+    "prompt_version": "vision-v4",
+    "timestamp": "2026-11-10T09:39:50+08:00",
+    "request_id": "vision-a8ebd7f3b3534d35985fcb1f0e63552b",
+    "usage": {
+      "prompt_tokens": 1294,
+      "completion_tokens": 228,
+      "total_tokens": 1522,
+      "prompt_tokens_details": {
+        "cached_tokens": 512
+      },
+      "prompt_cache_hit_tokens": 512,
+      "prompt_cache_miss_tokens": 782
+    },
+    "cost": {
+      "tier": "peak",
+      "input_cached_tokens": 512,
+      "input_miss_tokens": 782,
+      "output_tokens": 228,
+      "cost_input_cached_yuan": 2.048e-05,
+      "cost_input_miss_yuan": 0.001564,
+      "cost_output_yuan": 0.001824,
+      "cost_total_yuan": 0.00480248
+    },
+    "model": "deepseek-flash",
+    "saved_path": "C:\\Code\\软件应用开发实践\\data\\vision\\vision-a8ebd7f3b3534d35985fcb1f0e63552b\\result.json",
+    "image_path": "C:\\Code\\软件应用开发实践\\data\\vision\\vision-a8ebd7f3b3534d35985fcb1f0e63552b\\input.png",
+    "elapsed_ms": 2347.9,
+    "game_profile": "generic",
+    "requested_profile": "auto",
+    "request_settings": {
+      "model": "deepseek-flash",
+      "max_tokens": 4096,
+      "temperature": 0,
+      "thinking": "disabled"
+    },
+    "image": {
+      "source_name": "E05.png",
+      "original_size": [
+        1200,
+        760
+      ],
+      "submitted_size": [
+        1200,
+        760
+      ],
+      "source_sha256": "c12b2b0a59f389a76794279ac2a01dcd942c67a190ba4d726e9ad407cccca17b",
+      "submitted_sha256": "c12b2b0a59f389a76794279ac2a01dcd942c67a190ba4d726e9ad407cccca17b",
+      "submitted_bytes": 34160
+    },
+    "profile_detection": {
+      "visible_title": "",
+      "reason": "标题未确认，使用通用模式",
+      "usage": {
+        "prompt_tokens": 661,
+        "completion_tokens": 9,
+        "total_tokens": 670,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 661
+      },
+      "cost": {
+        "tier": "peak",
+        "input_cached_tokens": 0,
+        "input_miss_tokens": 661,
+        "output_tokens": 9,
+        "cost_input_cached_yuan": 0.0,
+        "cost_input_miss_yuan": 0.001322,
+        "cost_output_yuan": 7.2e-05,
+        "cost_total_yuan": 0.001394
+      }
+    },
+    "references": [],
+    "latency_ms": 1600.8,
+    "attempts": 1,
+    "finish_reason": "stop",
+    "recognition_cost": {
+      "tier": "peak",
+      "input_cached_tokens": 512,
+      "input_miss_tokens": 782,
+      "output_tokens": 228,
+      "cost_input_cached_yuan": 2.048e-05,
+      "cost_input_miss_yuan": 0.001564,
+      "cost_output_yuan": 0.001824,
+      "cost_total_yuan": 0.00340848
+    },
+    "raw_response": "{\"scene\": \"combat\", \"turn\": null, \"player\": {\"hp\": null, \"max_hp\": null, \"energy\": null, \"max_energy\": null, \"block\": null, \"statuses\": null}, \"hand\": [{\"name\": \"STRIKE\", \"cost\": 1, \"upgraded\": false}, {\"name\": \"DEFEND\", \"cost\": 1, \"upgraded\": false}, {\"name\": \"BASH\", \"cost\": 2, \"upgraded\": false}], \"enemies\": [{\"name\": \"TEST SLIME\", \"hp\": 23, \"max_hp\": 30, \"block\": 0, \"intent\": \"ATTACK\", \"intent_damage\": 10, \"intent_hits\": 1, \"statuses\": null}], \"uncertainties\": [\"玩家HUD被遮挡，生命、能量、格挡和状态不可见\", \"回合数未显示\", \"敌人血条下的状态图标未显示\"], \"tooltips\": []}",
+    "normalizations": []
+  },
+  "checks": [
+    {
+      "field": "scene",
+      "expected": "combat",
+      "actual": "combat",
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "turn",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.hp",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.max_hp",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.energy",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.max_energy",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.block",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.hp",
+      "expected": 23,
+      "actual": 23,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.max_hp",
+      "expected": 30,
+      "actual": 30,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.intent_damage",
+      "expected": 10,
+      "actual": 10,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.intent_hits",
+      "expected": 1,
+      "actual": 1,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "hand.0.name",
+      "expected": "STRIKE",
+      "actual": "STRIKE",
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "hand.0.cost",
+      "expected": 1,
+      "actual": 1,
+      "present": true,
+      "passed": true
+    }
+  ],
+  "review": {
+    "basis": "固定标签规则评分；真实图标签AI辅助目视核对，待用户确认",
+    "user_confirmed": false
+  }
+}

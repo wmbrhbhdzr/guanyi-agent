@@ -1,0 +1,19 @@
+{
+  "id": "E07",
+  "kind": "synthetic",
+  "scenario": "non_combat_out_of_scope",
+  "expected": {
+    "player.hp": null,
+    "player.energy": null,
+    "turn": null
+  },
+  "allowed": {
+    "scene": [
+      "menu",
+      "unknown"
+    ]
+  },
+  "image": "inputs/E07.png",
+  "sha256": "ee061b70da3518a09e94dd66acb8472d30ba7d37ef4a7f54748a2d63790e93a7",
+  "label_source": "合成图生成参数"
+}

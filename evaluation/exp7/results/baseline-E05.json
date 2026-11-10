@@ -1,0 +1,181 @@
+{
+  "version": "baseline",
+  "case_id": "E05",
+  "kind": "synthetic",
+  "scenario": "hidden_hud",
+  "timestamp": "2026-11-10T09:38:44.762999+08:00",
+  "result": {
+    "ok": true,
+    "status": "parsed",
+    "observation": {
+      "scene": "combat",
+      "turn": null,
+      "player": {
+        "hp": null,
+        "max_hp": null,
+        "energy": null,
+        "max_energy": null,
+        "block": null
+      },
+      "hand": [
+        {
+          "name": "STRIKE",
+          "cost": 1,
+          "upgraded": false
+        },
+        {
+          "name": "DEFEND",
+          "cost": 1,
+          "upgraded": false
+        },
+        {
+          "name": "BASH",
+          "cost": 2,
+          "upgraded": false
+        }
+      ],
+      "enemies": [
+        {
+          "name": "TEST SLIME",
+          "hp": 23,
+          "max_hp": 30,
+          "block": 0,
+          "intent": "ATTACK 10 x 1",
+          "intent_damage": 10,
+          "intent_hits": 1
+        }
+      ],
+      "uncertainties": [
+        "Player HUD values are obscured and not visible.",
+        "Turn number is not visible.",
+        "Image is labeled as a synthetic combat frame, not a real game screenshot."
+      ]
+    },
+    "error": null,
+    "usage": {
+      "prompt_tokens": 1012,
+      "completion_tokens": 441,
+      "total_tokens": 1453,
+      "prompt_tokens_details": {
+        "cached_tokens": 256
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 263
+      },
+      "prompt_cache_hit_tokens": 256,
+      "prompt_cache_miss_tokens": 756
+    },
+    "cost": {
+      "tier": "peak",
+      "input_cached_tokens": 256,
+      "input_miss_tokens": 756,
+      "output_tokens": 441,
+      "cost_input_cached_yuan": 1.024e-05,
+      "cost_input_miss_yuan": 0.001512,
+      "cost_output_yuan": 0.003528,
+      "cost_total_yuan": 0.00505024
+    },
+    "attempts": 1,
+    "model": "deepseek-flash",
+    "finish_reason": "stop",
+    "raw_response": "{\"scene\":\"combat\",\"turn\":null,\"player\":{\"hp\":null,\"max_hp\":null,\"energy\":null,\"max_energy\":null,\"block\":null},\"hand\":[{\"name\":\"STRIKE\",\"cost\":1,\"upgraded\":false},{\"name\":\"DEFEND\",\"cost\":1,\"upgraded\":false},{\"name\":\"BASH\",\"cost\":2,\"upgraded\":false}],\"enemies\":[{\"name\":\"TEST SLIME\",\"hp\":23,\"max_hp\":30,\"block\":0,\"intent\":\"ATTACK 10 x 1\",\"intent_damage\":10,\"intent_hits\":1}],\"uncertainties\":[\"Player HUD values are obscured and not visible.\",\"Turn number is not visible.\",\"Image is labeled as a synthetic combat frame, not a real game screenshot.\"]}",
+    "elapsed_ms": 3503.9
+  },
+  "checks": [
+    {
+      "field": "scene",
+      "expected": "combat",
+      "actual": "combat",
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "turn",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.hp",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.max_hp",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.energy",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.max_energy",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.block",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.hp",
+      "expected": 23,
+      "actual": 23,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.max_hp",
+      "expected": 30,
+      "actual": 30,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.intent_damage",
+      "expected": 10,
+      "actual": 10,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.intent_hits",
+      "expected": 1,
+      "actual": 1,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "hand.0.name",
+      "expected": "STRIKE",
+      "actual": "STRIKE",
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "hand.0.cost",
+      "expected": 1,
+      "actual": 1,
+      "present": true,
+      "passed": true
+    }
+  ],
+  "review": {
+    "basis": "固定标签规则评分；真实图标签AI辅助目视核对，待用户确认",
+    "user_confirmed": false
+  }
+}

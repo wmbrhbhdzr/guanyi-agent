@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-"""界面层：Tkinter 三个页面（对应实验3 图 8 的页面结构与导航图）。
+"""界面层：Tkinter 六个页面，沿用实验3的分层与导航设计。
 
     · 核心任务页：录入局面与操作 → 规则基线建议 → 护栏结论 → 落盘
     · 记录列表页：对局选择 + 决策点表格（含空数据与损坏行提示）
     · 复盘报告页：生成并展示逐回合复盘报告
+    · 知识问答、复盘 Agent、截图识别：分别接入对应应用服务
 
 设计要点（沿用实验3 的约束）：
 
@@ -52,12 +53,13 @@ CARDS = ["防御", "打击", "重击", "痛击", "铁斩波"]
 class GuanyiApp(tk.Tk):
     """观弈主窗口。"""
 
-    def __init__(self, service=None, qa=None, agent_client=None):
+    def __init__(self, service=None, qa=None, agent_client=None, vision=None):
         super().__init__()
         self.service = service or SessionService(JsonlStore())
         self._qa = qa                      # 答疑服务（实验5）；None 时首次使用再创建
         self._agent_client = agent_client  # Agent 用的模型客户端（实验6）；None 时用真实客户端
-        self.title("观弈 GuanYi · 仅复盘模式（实验5/6：知识问答 + 复盘 Agent）")
+        self._vision = vision             # 可注入截图识别服务，方便不联网验证界面。
+        self.title("观弈 GuanYi · 截图识别与复盘助手")
         self.geometry("1080x760")
         self.minsize(940, 640)
 
@@ -108,6 +110,9 @@ class GuanyiApp(tk.Tk):
         self.nb.add(self.tab_report, text="复盘报告")
         self.nb.add(self.tab_qa, text="答疑（知识库）")
         self.nb.add(self.tab_agent, text="复盘 Agent")
+        from .vision_tab import VisionPanel
+        self.vision_panel = VisionPanel(self.nb, service=self._vision)
+        self.nb.add(self.vision_panel, text="游戏画面识别")
         self._build_task_tab()
         self._build_list_tab()
         self._build_report_tab()

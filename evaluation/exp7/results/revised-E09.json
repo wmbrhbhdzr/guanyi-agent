@@ -1,0 +1,529 @@
+{
+  "version": "revised",
+  "case_id": "E09",
+  "kind": "real",
+  "scenario": "battle",
+  "timestamp": "2026-11-10T09:40:05.004366+08:00",
+  "result": {
+    "ok": true,
+    "status": "partial",
+    "observation": {
+      "scene": "combat",
+      "turn": 1,
+      "player": {
+        "hp": 107,
+        "max_hp": 107,
+        "energy": 3,
+        "max_energy": 3,
+        "block": 0,
+        "statuses": []
+      },
+      "hand": [
+        {
+          "name": "打击",
+          "cost": 1,
+          "upgraded": null
+        },
+        {
+          "name": "笨拙",
+          "cost": null,
+          "upgraded": null,
+          "card_type": "诅咒",
+          "playable": false,
+          "keywords": [
+            "不能被打出",
+            "虚无"
+          ],
+          "rules_source": "https://spire-codex.com/api/cards?lang=zhs#CLUMSY"
+        },
+        {
+          "name": "打击",
+          "cost": 1,
+          "upgraded": null
+        },
+        {
+          "name": "打击",
+          "cost": 1,
+          "upgraded": null
+        },
+        {
+          "name": "打击",
+          "cost": 1,
+          "upgraded": null
+        }
+      ],
+      "enemies": [
+        {
+          "name": "外骨骼虫",
+          "hp": 24,
+          "max_hp": 24,
+          "block": 0,
+          "intent": "攻击",
+          "intent_damage": 1,
+          "intent_hits": 3,
+          "statuses": [
+            {
+              "name": "难以杀灭",
+              "amount": 9,
+              "rule_id": "HARD_TO_KILL",
+              "effect_type": "Buff",
+              "stack_type": "Counter",
+              "rules_source": "https://spire-codex.com/static/images/powers/hard_to_kill_power.webp"
+            }
+          ]
+        },
+        {
+          "name": "外骨骼虫",
+          "hp": 26,
+          "max_hp": 26,
+          "block": 0,
+          "intent": "攻击",
+          "intent_damage": 8,
+          "intent_hits": 1,
+          "statuses": [
+            {
+              "name": "难以杀灭",
+              "amount": 9,
+              "rule_id": "HARD_TO_KILL",
+              "effect_type": "Buff",
+              "stack_type": "Counter",
+              "rules_source": "https://spire-codex.com/static/images/powers/hard_to_kill_power.webp"
+            }
+          ]
+        },
+        {
+          "name": "外骨骼虫",
+          "hp": 25,
+          "max_hp": 25,
+          "block": 0,
+          "intent": "蓝色向上箭头，增益",
+          "intent_damage": null,
+          "intent_hits": null,
+          "statuses": [
+            {
+              "name": "难以杀灭",
+              "amount": 9,
+              "rule_id": "HARD_TO_KILL",
+              "effect_type": "Buff",
+              "stack_type": "Counter",
+              "rules_source": "https://spire-codex.com/static/images/powers/hard_to_kill_power.webp"
+            }
+          ]
+        }
+      ],
+      "uncertainties": [
+        "敌人名称按外形匹配参考图，待核对",
+        "笨拙为诅咒牌，无普通能量费用"
+      ],
+      "tooltips": []
+    },
+    "summary": "画面：战斗　回合：1\n玩家血量：107 / 107　能量：3 / 3　格挡：0\n玩家增减益：无\n手牌：打击（费用1）、笨拙（诅咒，不能被打出，虚无；规则资料）、打击（费用1）、打击（费用1）、打击（费用1）\n敌人1：外骨骼虫　血量24/24　格挡0\n    意图：攻击；单次伤害1，次数3\n    增减益：难以杀灭（数值9，伤害上限）\n敌人2：外骨骼虫　血量26/26　格挡0\n    意图：攻击；单次伤害8，次数1\n    增减益：难以杀灭（数值9，伤害上限）\n敌人3：外骨骼虫　血量25/25　格挡0\n    意图：蓝色向上箭头，增益\n    增减益：难以杀灭（数值9，伤害上限）\n\n待核对：\n· 敌人名称按外形匹配参考图，待核对\n· 笨拙为诅咒牌，无普通能量费用\n\n已提供12张敌人/增减益参考图：名称可按外形比对，并非都在画面上直接显示；当前数值仍取自当前截图。",
+    "warnings": [
+      "敌人名称按外形匹配参考图，待核对",
+      "笨拙为诅咒牌，无普通能量费用"
+    ],
+    "error": null,
+    "prompt_version": "vision-v4",
+    "timestamp": "2026-11-10T09:39:57+08:00",
+    "request_id": "vision-6f24abc04524411caa320586a593fb16",
+    "usage": {
+      "prompt_tokens": 4884,
+      "completion_tokens": 421,
+      "total_tokens": 5305,
+      "prompt_tokens_details": {
+        "cached_tokens": 1024
+      },
+      "prompt_cache_hit_tokens": 1024,
+      "prompt_cache_miss_tokens": 3860
+    },
+    "cost": {
+      "tier": "peak",
+      "input_cached_tokens": 1024,
+      "input_miss_tokens": 3860,
+      "output_tokens": 421,
+      "cost_input_cached_yuan": 4.096e-05,
+      "cost_input_miss_yuan": 0.00772,
+      "cost_output_yuan": 0.003368,
+      "cost_total_yuan": 0.01345496
+    },
+    "model": "deepseek-flash",
+    "saved_path": "C:\\Code\\软件应用开发实践\\data\\vision\\vision-6f24abc04524411caa320586a593fb16\\result.json",
+    "image_path": "C:\\Code\\软件应用开发实践\\data\\vision\\vision-6f24abc04524411caa320586a593fb16\\input.png",
+    "elapsed_ms": 7318.1,
+    "game_profile": "sts2",
+    "requested_profile": "auto",
+    "request_settings": {
+      "model": "deepseek-flash",
+      "max_tokens": 4096,
+      "temperature": 0,
+      "thinking": "disabled"
+    },
+    "image": {
+      "source_name": "E09.png",
+      "original_size": [
+        1920,
+        1124
+      ],
+      "submitted_size": [
+        1920,
+        1124
+      ],
+      "source_sha256": "d3308004701faaa224d2166882b7c46b6b9ab7fbc3621e89402304226785a577",
+      "submitted_sha256": "d3308004701faaa224d2166882b7c46b6b9ab7fbc3621e89402304226785a577",
+      "submitted_bytes": 1664787
+    },
+    "profile_detection": {
+      "visible_title": "Slay the Spire 2",
+      "reason": "按可见窗口标题选择适配",
+      "usage": {
+        "prompt_tokens": 1099,
+        "completion_tokens": 16,
+        "total_tokens": 1115,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 1099
+      },
+      "cost": {
+        "tier": "peak",
+        "input_cached_tokens": 0,
+        "input_miss_tokens": 1099,
+        "output_tokens": 16,
+        "cost_input_cached_yuan": 0.0,
+        "cost_input_miss_yuan": 0.002198,
+        "cost_output_yuan": 0.000128,
+        "cost_total_yuan": 0.002326
+      }
+    },
+    "references": [
+      {
+        "id": "EXOSKELETON",
+        "name": "外骨骼虫",
+        "file": "exoskeleton.webp",
+        "source": "https://spire-codex.com/static/images/monsters/exoskeleton.webp",
+        "sha256": "c1c6a91a55c0e964d271ecdb4ae55cfebe8e237505d29f2a15e058f0fb0c8108"
+      },
+      {
+        "id": "SHRINKER_BEETLE",
+        "name": "缩小甲虫",
+        "file": "shrinker_beetle.webp",
+        "source": "https://spire-codex.com/static/images/monsters/shrinker_beetle.webp",
+        "sha256": "9a6bed4a856204b76f3fa5230b57abf5407e4c371031a259efae5143b1d92693"
+      },
+      {
+        "id": "SLUMBERING_BEETLE",
+        "name": "熟睡甲虫",
+        "file": "slumbering_beetle.webp",
+        "source": "https://spire-codex.com/static/images/monsters/slumbering_beetle.webp",
+        "sha256": "f706e6f9039b40665b1803405ad36c0ac0c9cec92d4f22b7f37fbc65702f4599"
+      },
+      {
+        "id": "LOUSE_PROGENITOR",
+        "name": "虱虫之祖",
+        "file": "louse_progenitor.webp",
+        "source": "https://spire-codex.com/static/images/monsters/louse_progenitor.webp",
+        "sha256": "0993b34511df08ff4fdd6d71d80b53f6f19471638406d2666db0a945f86647ee"
+      },
+      {
+        "id": "HARD_TO_KILL",
+        "name": "难以杀灭",
+        "kind": "power",
+        "effect_type": "Buff",
+        "stack_type": "Counter",
+        "allow_negative": null,
+        "description": "[gold]{OwnerName}[/gold]受到的所有伤害和生命减少效果不会超过[blue]{Amount}[/blue]点。",
+        "file": "power_hard_to_kill.webp",
+        "source": "https://spire-codex.com/static/images/powers/hard_to_kill_power.webp",
+        "sha256": "57b788268b384f283decca77159b984622ec507a29349e977631c0db655ba10f"
+      },
+      {
+        "id": "STRENGTH",
+        "name": "力量",
+        "kind": "power",
+        "effect_type": "Buff",
+        "stack_type": "Counter",
+        "allow_negative": true,
+        "description": "{Amount:cond:<0?减少|增加}攻击牌造成的伤害值[blue]{Amount:abs()}[/blue]点。",
+        "file": "power_strength.webp",
+        "source": "https://spire-codex.com/static/images/powers/strength_power.webp",
+        "sha256": "c024023e4fb0ad25d6844b1aa33c0ece491edb4181539776b62814001564fa0f"
+      },
+      {
+        "id": "VULNERABLE",
+        "name": "易伤",
+        "kind": "power",
+        "effect_type": "Debuff",
+        "stack_type": "Counter",
+        "allow_negative": null,
+        "description": "[blue]{Amount}[/blue]回合内，受到的攻击伤害增加[blue]{DamageIncrease:percentMore()}%[/blue]。",
+        "file": "power_vulnerable.webp",
+        "source": "https://spire-codex.com/static/images/powers/vulnerable_power.webp",
+        "sha256": "0fc8366690d30d8f86cd551c0d0ccefe8bdf5368b59f317cca6c110376b58716"
+      },
+      {
+        "id": "WEAK",
+        "name": "虚弱",
+        "kind": "power",
+        "effect_type": "Debuff",
+        "stack_type": "Counter",
+        "allow_negative": null,
+        "description": "虚弱的生物造成的攻击伤害减少[blue]25%[/blue]。",
+        "file": "power_weak.webp",
+        "source": "https://spire-codex.com/static/images/powers/weak_power.webp",
+        "sha256": "0ff6f2edc4b34a4388b7a7e874d5552eed48ee64780b4c0a91ff884c9eb3444f"
+      },
+      {
+        "id": "FRAIL",
+        "name": "脆弱",
+        "kind": "power",
+        "effect_type": "Debuff",
+        "stack_type": "Counter",
+        "allow_negative": null,
+        "description": "脆弱时，从卡牌中获得的[gold]格挡[/gold]值减少[blue]25%[/blue]。",
+        "file": "power_frail.webp",
+        "source": "https://spire-codex.com/static/images/powers/frail_power.webp",
+        "sha256": "48158d1ad9f73f4f7705973717d87fde7bf5bf6b7677549a899d9c723e435760"
+      },
+      {
+        "id": "DEXTERITY",
+        "name": "敏捷",
+        "kind": "power",
+        "effect_type": "Buff",
+        "stack_type": "Counter",
+        "allow_negative": true,
+        "description": "{Amount:cond:<0?减少|增加}从卡牌中获得的[gold]格挡[/gold]值[blue]{Amount:abs()}[/blue]点。",
+        "file": "power_dexterity.webp",
+        "source": "https://spire-codex.com/static/images/powers/dexterity_power.webp",
+        "sha256": "e77ae8541b08df16d6de4297b52005af8635932a07b5ae18acd8d46aba1cc6f7"
+      },
+      {
+        "id": "THORNS",
+        "name": "荆棘",
+        "kind": "power",
+        "effect_type": "Buff",
+        "stack_type": "Counter",
+        "allow_negative": null,
+        "description": "当被攻击命中时，反击造成伤害。",
+        "file": "power_thorns.webp",
+        "source": "https://spire-codex.com/static/images/powers/thorns_power.webp",
+        "sha256": "9ec45a8fa6e6e1ccc48e37e4d938edf327eaa95c00c24d88a4aa822086a4f0c5"
+      },
+      {
+        "id": "POISON",
+        "name": "中毒",
+        "kind": "power",
+        "effect_type": "Debuff",
+        "stack_type": "Counter",
+        "allow_negative": null,
+        "description": "中毒的生物会在自身回合开始时失去生命。中毒层数每回合减少[blue]1[/blue]。",
+        "file": "power_poison.webp",
+        "source": "https://spire-codex.com/static/images/powers/poison_power.webp",
+        "sha256": "bb0aa6e6cdc1944dd3b80107786846e877a397c31351299658a52f4289c1c05e"
+      }
+    ],
+    "latency_ms": 4274.5,
+    "attempts": 1,
+    "finish_reason": "stop",
+    "recognition_cost": {
+      "tier": "peak",
+      "input_cached_tokens": 1024,
+      "input_miss_tokens": 3860,
+      "output_tokens": 421,
+      "cost_input_cached_yuan": 4.096e-05,
+      "cost_input_miss_yuan": 0.00772,
+      "cost_output_yuan": 0.003368,
+      "cost_total_yuan": 0.01112896
+    },
+    "raw_response": "{\"scene\": \"combat\", \"turn\": 1, \"player\": {\"hp\": 107, \"max_hp\": 107, \"energy\": 3, \"max_energy\": 3, \"block\": 0, \"statuses\": []}, \"hand\": [{\"name\": \"打击\", \"cost\": 1, \"upgraded\": null}, {\"name\": \"笨拙\", \"cost\": null, \"upgraded\": null}, {\"name\": \"打击\", \"cost\": 1, \"upgraded\": null}, {\"name\": \"打击\", \"cost\": 1, \"upgraded\": null}, {\"name\": \"打击\", \"cost\": 1, \"upgraded\": null}], \"enemies\": [{\"name\": \"外骨骼虫\", \"hp\": 24, \"max_hp\": 24, \"block\": 0, \"intent\": \"攻击\", \"intent_damage\": 1, \"intent_hits\": 3, \"statuses\": [{\"name\": \"难以杀灭\", \"amount\": 9}]}, {\"name\": \"外骨骼虫\", \"hp\": 26, \"max_hp\": 26, \"block\": 0, \"intent\": \"攻击\", \"intent_damage\": 8, \"intent_hits\": 1, \"statuses\": [{\"name\": \"难以杀灭\", \"amount\": 9}]}, {\"name\": \"外骨骼虫\", \"hp\": 25, \"max_hp\": 25, \"block\": 0, \"intent\": \"蓝色向上箭头，增益\", \"intent_damage\": null, \"intent_hits\": null, \"statuses\": [{\"name\": \"难以杀灭\", \"amount\": 9}]}], \"uncertainties\": [\"敌人名称按外形匹配参考图，待核对\", \"笨拙为诅咒牌，无普通能量费用\"], \"tooltips\": []}",
+    "normalizations": [
+      {
+        "field": "hand[1]",
+        "previous_cost": null,
+        "reason": "CLUMSY规则：不可打出且无普通能量费用；这是规则资料，不是OCR数值"
+      }
+    ],
+    "identity_evidence": "visual_reference_candidates_not_verified"
+  },
+  "checks": [
+    {
+      "field": "scene",
+      "expected": "combat",
+      "actual": "combat",
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "turn",
+      "expected": 1,
+      "actual": 1,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.hp",
+      "expected": 107,
+      "actual": 107,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.max_hp",
+      "expected": 107,
+      "actual": 107,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.energy",
+      "expected": 3,
+      "actual": 3,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.max_energy",
+      "expected": 3,
+      "actual": 3,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "player.block",
+      "expected": 0,
+      "actual": 0,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "hand.1.name",
+      "expected": "笨拙",
+      "actual": "笨拙",
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "hand.1.cost",
+      "expected": null,
+      "actual": null,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.hp",
+      "expected": 24,
+      "actual": 24,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.1.hp",
+      "expected": 26,
+      "actual": 26,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.2.hp",
+      "expected": 25,
+      "actual": 25,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.intent_damage",
+      "expected": 1,
+      "actual": 1,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.intent_hits",
+      "expected": 3,
+      "actual": 3,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.1.intent_damage",
+      "expected": 8,
+      "actual": 8,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.1.intent_hits",
+      "expected": 1,
+      "actual": 1,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.block",
+      "expected": 0,
+      "actual": 0,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.statuses.0.name",
+      "expected": "难以杀灭",
+      "actual": "难以杀灭",
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.0.statuses.0.amount",
+      "expected": 9,
+      "actual": 9,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.1.block",
+      "expected": 0,
+      "actual": 0,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.1.statuses.0.name",
+      "expected": "难以杀灭",
+      "actual": "难以杀灭",
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.1.statuses.0.amount",
+      "expected": 9,
+      "actual": 9,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.2.block",
+      "expected": 0,
+      "actual": 0,
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.2.statuses.0.name",
+      "expected": "难以杀灭",
+      "actual": "难以杀灭",
+      "present": true,
+      "passed": true
+    },
+    {
+      "field": "enemies.2.statuses.0.amount",
+      "expected": 9,
+      "actual": 9,
+      "present": true,
+      "passed": true
+    }
+  ],
+  "review": {
+    "basis": "固定标签规则评分；真实图标签AI辅助目视核对，待用户确认",
+    "user_confirmed": false
+  }
+}
