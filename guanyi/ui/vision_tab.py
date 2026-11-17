@@ -13,6 +13,7 @@ from PIL import Image, ImageTk
 from ..app.vision_service import VisionService
 from ..vision.images import ImageInputError
 from ..app.window_vision_service import WindowVisionService
+from .theme import page_heading
 
 
 class VisionPanel(ttk.Frame):
@@ -35,9 +36,12 @@ class VisionPanel(ttk.Frame):
         self.path_var = tk.StringVar(value="尚未选择截图")
         self.status_var = tk.StringVar(value="先自动连接游戏或手动选择窗口；导入图片用于复测固定局面")
         self.game_var = tk.StringVar(value="自动（按标题）")
-        connection = ttk.Frame(self)
-        connection.pack(fill="x", pady=(0, 5))
-        self.connect_button = ttk.Button(connection, text="自动连接游戏", command=lambda: self.refresh_windows(True))
+        page_heading(self, "观察当前游戏", "连接窗口后先预览画面，再识别局面。你的游戏操作始终由你决定。")
+        source_card = ttk.LabelFrame(self, text="01  画面来源", padding=(14, 10))
+        source_card.pack(fill="x", pady=(0, 12))
+        connection = ttk.Frame(source_card)
+        connection.pack(fill="x", pady=(0, 8))
+        self.connect_button = ttk.Button(connection, text="自动连接游戏", command=lambda: self.refresh_windows(True), style="Primary.TButton")
         self.connect_button.pack(side="left")
         self.refresh_button = ttk.Button(connection, text="刷新窗口", command=self.refresh_windows)
         self.refresh_button.pack(side="left", padx=6)
@@ -45,11 +49,11 @@ class VisionPanel(ttk.Frame):
         self.window_box = ttk.Combobox(connection, textvariable=self.window_var, state="readonly", width=70)
         self.window_box.pack(side="left", fill="x", expand=True)
         self.window_box.bind("<<ComboboxSelected>>", self.select_window)
-        actions = ttk.Frame(self)
-        actions.pack(fill="x", pady=(0, 5))
+        actions = ttk.Frame(source_card)
+        actions.pack(fill="x", pady=(0, 8))
         self.capture_button = ttk.Button(actions, text="采集预览", command=lambda: self.capture_window(False))
         self.capture_button.pack(side="left")
-        self.capture_run_button = ttk.Button(actions, text="采集并识别", command=lambda: self.capture_window(True))
+        self.capture_run_button = ttk.Button(actions, text="采集并识别", command=lambda: self.capture_window(True), style="Primary.TButton")
         self.capture_run_button.pack(side="left", padx=6)
         ttk.Label(actions, text="间隔（秒）：").pack(side="left", padx=(8, 0))
         self.interval_var = tk.StringVar(value="5")
@@ -57,9 +61,9 @@ class VisionPanel(ttk.Frame):
         self.interval_entry.pack(side="left")
         self.start_button = ttk.Button(actions, text="开始连续识别", command=self.start_continuous)
         self.start_button.pack(side="left", padx=6)
-        self.stop_button = ttk.Button(actions, text="暂停 / 停止", command=self.stop_continuous)
+        self.stop_button = ttk.Button(actions, text="暂停 / 停止", command=self.stop_continuous, style="Stop.TButton")
         self.stop_button.pack(side="left")
-        top = ttk.Frame(self)
+        top = ttk.Frame(source_card)
         top.pack(fill="x")
         self.choose_button = ttk.Button(top, text="导入测试图片", command=self.choose_image)
         self.choose_button.pack(side="left")
@@ -69,14 +73,14 @@ class VisionPanel(ttk.Frame):
                                    values=["自动（按标题）", "通用识别", "杀戮尖塔2"])
         self.game_box.pack(side="left", padx=(0, 8))
         ttk.Label(top, textvariable=self.path_var, wraplength=650).pack(side="left", fill="x", expand=True)
-        ttk.Label(self, text="仅采集所选窗口客户区；预览不请求模型。连续模式在本次完成后等待设定间隔，画面未变时跳过。",
-                  foreground="#607D8B").pack(anchor="w", pady=(6, 2))
-        ttk.Label(self, textvariable=self.status_var, foreground="#2F4B7C",
-                  wraplength=980).pack(anchor="w", pady=4)
+        ttk.Label(source_card, text="只采集所选窗口 · 预览免费 · 连续识别跳过未变化的画面",
+                  style="Muted.TLabel").pack(anchor="w", pady=(10, 0))
+        ttk.Label(self, textvariable=self.status_var, style="Badge.TLabel",
+                  wraplength=1040).pack(anchor="w", fill="x", pady=(0, 8))
         body = ttk.Panedwindow(self, orient="horizontal")
         body.pack(fill="both", expand=True, pady=6)
-        preview = ttk.LabelFrame(body, text="输入图片", padding=6)
-        self.preview_label = ttk.Label(preview, text="请选择 PNG / JPEG / WebP / BMP 图片", anchor="center")
+        preview = ttk.LabelFrame(body, text="02  当前画面", padding=12)
+        self.preview_label = ttk.Label(preview, text="尚未获取画面\n\n连接游戏窗口并采集预览\n或导入一张测试图片", anchor="center", justify="center", style="Muted.TLabel")
         self.preview_label.pack(fill="both", expand=True)
         body.add(preview, weight=1)
         results = ttk.Frame(body)
@@ -236,7 +240,7 @@ class VisionPanel(ttk.Frame):
             self.preview_label.configure(image=self._preview, text="")
             self.path = str(path)
             self.path_var.set(str(path))
-            self.status_var.set("图片已就绪（%d×%d），点击“识别截图”会请求模型" % frame.size)
+            self.status_var.set("图片已就绪（%d×%d），点击“识别导入图片”会请求模型" % frame.size)
             self.run_button.configure(state="normal")
             return True
         except (ImageInputError, OSError, ValueError) as exc:

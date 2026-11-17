@@ -45,6 +45,7 @@ from ..app.service import SessionService
 from ..core.actions import action_key
 from ..core.errors import GuanyiError, zh_message
 from ..data.store import JsonlStore
+from .theme import install_theme, polish_classic_widgets, page_heading
 
 #: 实验4 只用最基础的几张牌，后续实验会改为从截图识别
 CARDS = ["防御", "打击", "重击", "痛击", "铁斩波"]
@@ -55,13 +56,14 @@ class GuanyiApp(tk.Tk):
 
     def __init__(self, service=None, qa=None, agent_client=None, vision=None):
         super().__init__()
+        self.ui_style = install_theme(self)
         self.service = service or SessionService(JsonlStore())
         self._qa = qa                      # 答疑服务（实验5）；None 时首次使用再创建
         self._agent_client = agent_client  # Agent 用的模型客户端（实验6）；None 时用真实客户端
         self._vision = vision             # 可注入截图识别服务，方便不联网验证界面。
-        self.title("观弈 GuanYi · 截图识别与复盘助手")
-        self.geometry("1080x760")
-        self.minsize(940, 640)
+        self.title("观弈 GuanYi · 游戏观察与复盘")
+        self.geometry("1280x900")
+        self.minsize(1100, 800)
 
         self.run_var = tk.StringVar()
         self.status_var = tk.StringVar(value="就绪：请先新建或选择一局对局")
@@ -76,16 +78,28 @@ class GuanyiApp(tk.Tk):
             "需要时查知识库解释原因，最后写复盘报告并给出结论。"))
         self.agent_status_var = tk.StringVar(value="（还没运行）")
 
+        self._build_header()
         self._build_toolbar()
         self._build_pages()
         self._build_statusbar()
+        polish_classic_widgets(self)
         self.refresh_runs()
         self.refresh_summary()          # 打开就有摘要，不用先点按钮
         self.protocol("WM_DELETE_WINDOW", self.destroy)
 
     # ---------------- 顶部工具条 ----------------
+    def _build_header(self):
+        header = ttk.Frame(self, padding=(24, 17, 24, 12))
+        header.pack(fill="x")
+        brand = ttk.Frame(header)
+        brand.pack(side="left")
+        ttk.Label(brand, text="GUANYI  /  GAME OBSERVER", style="Eyebrow.TLabel").pack(anchor="w")
+        ttk.Label(brand, text="观弈", style="Brand.TLabel").pack(anchor="w", pady=(0, 2))
+        ttk.Label(header, text="观察局面 · 理解决策 · 回看每一步", style="Muted.TLabel").pack(side="left", padx=22)
+        ttk.Label(header, text="仅复盘模式", style="Badge.TLabel").pack(side="right")
+
     def _build_toolbar(self):
-        bar = ttk.Frame(self, padding=(10, 8))
+        bar = ttk.Frame(self, padding=(24, 4, 24, 12))
         bar.pack(fill="x")
         ttk.Label(bar, text="当前对局：").pack(side="left")
         self.run_box = ttk.Combobox(bar, textvariable=self.run_var, width=24, state="readonly")
@@ -93,38 +107,43 @@ class GuanyiApp(tk.Tk):
         self.run_box.bind("<<ComboboxSelected>>", lambda _e: self.on_select_run())
         ttk.Button(bar, text="新建对局", command=self.on_new_run).pack(side="left", padx=2)
         ttk.Button(bar, text="刷新", command=self.refresh_runs).pack(side="left", padx=2)
-        ttk.Label(bar, text="档位：仅复盘　·　决策来源：规则基线（非 AI）",
-                  foreground="#2F4B7C").pack(side="right")
+        ttk.Label(bar, text="手工记录使用规则基线建议", style="Muted.TLabel").pack(side="right")
 
     # ---------------- 四个页面 ----------------
     def _build_pages(self):
         self.nb = ttk.Notebook(self)
-        self.nb.pack(fill="both", expand=True, padx=10, pady=(0, 6))
+        self.nb.pack(fill="both", expand=True, padx=24, pady=(0, 8))
         self.tab_task = ttk.Frame(self.nb, padding=10)
         self.tab_list = ttk.Frame(self.nb, padding=10)
         self.tab_report = ttk.Frame(self.nb, padding=10)
         self.tab_qa = ttk.Frame(self.nb, padding=10)
         self.tab_agent = ttk.Frame(self.nb, padding=10)
-        self.nb.add(self.tab_task, text="核心任务页")
-        self.nb.add(self.tab_list, text="记录列表")
+        self.nb.add(self.tab_task, text="决策记录")
+        self.nb.add(self.tab_list, text="对局记录")
         self.nb.add(self.tab_report, text="复盘报告")
         self.nb.add(self.tab_qa, text="答疑（知识库）")
         self.nb.add(self.tab_agent, text="复盘 Agent")
         from .vision_tab import VisionPanel
         self.vision_panel = VisionPanel(self.nb, service=self._vision)
         self.nb.add(self.vision_panel, text="游戏画面识别")
+        for parent, title, description in [
+            (self.tab_task, "记录一次决策", "填写局面，查看规则建议，再记录你实际采取的操作。"),
+            (self.tab_list, "回看对局记录", "逐回合查看建议、实际操作与结果。"),
+            (self.tab_report, "复盘这场对局", "从已有记录生成报告，定位建议与操作不一致的回合。"),
+            (self.tab_qa, "查一条游戏知识", "带着问题检索资料，查看回答和对应出处。"),
+            (self.tab_agent, "让助手分析记录", "给出复盘目标，查看工具调用过程和最终结论。"),
+        ]:
+            page_heading(parent, title, description)
         self._build_task_tab()
         self._build_list_tab()
         self._build_report_tab()
         self._build_qa_tab()
         self._build_agent_tab()
+        self.nb.select(self.vision_panel)
 
     def _build_task_tab(self):
-        left = ttk.LabelFrame(self.tab_task, text="① 局面（你来填）", padding=10)
-        left.grid(row=0, column=0, sticky="nsew", padx=(0, 10))
-        self.tab_task.columnconfigure(0, weight=1)
-        self.tab_task.columnconfigure(1, weight=1)
-        self.tab_task.columnconfigure(2, weight=1)
+        left = ttk.LabelFrame(self.tab_task, text="01  局面信息", padding=10)
+        left.pack(side="left", fill="both", expand=True, padx=(0, 12))
 
         self.entries = {}
         for row, (key, label, default) in enumerate([
@@ -155,26 +174,26 @@ class GuanyiApp(tk.Tk):
             entry.bind("<FocusOut>", lambda _e: self.refresh_summary())
         self.hand_box.bind("<<ListboxSelect>>", lambda _e: self.refresh_summary())
 
-        ttk.Label(left, text="局面摘要（由上面的数字自动生成，避免与实际输入不一致）").grid(
+        ttk.Label(left, text="局面摘要（根据当前输入生成）").grid(
             row=7, column=0, columnspan=2, sticky="w", pady=(10, 3))
         self.state_entry = ttk.Entry(left, width=46, state="readonly")
         self.state_entry.grid(row=8, column=0, columnspan=2, sticky="we")
-        ttk.Button(left, text="按上面的数字重新生成摘要",
+        ttk.Button(left, text="更新局面摘要",
                    command=self.on_fill_summary).grid(row=9, column=0, columnspan=2,
                                                       sticky="w", pady=(6, 0))
 
-        mid = ttk.LabelFrame(self.tab_task, text="② 建议（规则基线，非 AI）", padding=10)
-        mid.grid(row=0, column=1, sticky="nsew", padx=(0, 10))
-        ttk.Button(mid, text="让规则基线给建议", command=self.on_suggest).pack(anchor="w")
+        mid = ttk.LabelFrame(self.tab_task, text="02  规则建议", padding=10)
+        mid.pack(side="left", fill="both", expand=True, padx=(0, 12))
+        ttk.Button(mid, text="查看规则建议", command=self.on_suggest, style="Primary.TButton").pack(anchor="w")
         ttk.Label(mid, textvariable=self.suggestion_text, wraplength=260,
-                  justify="left", foreground="#2F4B7C").pack(anchor="w", pady=(8, 12))
+                  justify="left", foreground="#49634C").pack(anchor="w", pady=(8, 12))
         ttk.Separator(mid).pack(fill="x")
         ttk.Label(mid, text="③ 护栏结论", padding=(0, 8, 0, 4)).pack(anchor="w")
         ttk.Label(mid, textvariable=self.guardrail_text, wraplength=260,
-                  justify="left", foreground="#B26A00").pack(anchor="w")
+                  justify="left", foreground="#A45E42").pack(anchor="w")
 
-        right = ttk.LabelFrame(self.tab_task, text="④ 我实际怎么打", padding=10)
-        right.grid(row=0, column=2, sticky="nsew")
+        right = ttk.LabelFrame(self.tab_task, text="03  实际操作", padding=10)
+        right.pack(side="left", fill="both", expand=True)
         ttk.Label(right, text="打出的牌").pack(anchor="w")
         self.play_card = ttk.Combobox(right, values=CARDS, width=16, state="readonly")
         self.play_card.set("打击")
@@ -191,18 +210,18 @@ class GuanyiApp(tk.Tk):
         self.enemy_delta.insert(0, "-6")
         self.enemy_delta.pack(anchor="w")
         ttk.Separator(right).pack(fill="x", pady=10)
-        ttk.Button(right, text="采用建议并记录", command=lambda: self.on_record(use_suggestion=True)
+        ttk.Button(right, text="采用建议并记录", style="Primary.TButton", command=lambda: self.on_record(use_suggestion=True)
                    ).pack(fill="x", pady=3)
         ttk.Button(right, text="按我的操作记录", command=lambda: self.on_record(use_suggestion=False)
                    ).pack(fill="x", pady=3)
         ttk.Label(right, text="决策权在你：两个按钮都会如实记录，\n只有“采用建议”才把建议当成你的操作。",
-                  foreground="#607D8B", justify="left").pack(anchor="w", pady=(8, 0))
+                  foreground="#767368", justify="left").pack(anchor="w", pady=(8, 0))
 
     def _build_list_tab(self):
         top = ttk.Frame(self.tab_list)
         top.pack(fill="x")
         ttk.Button(top, text="刷新记录", command=self.refresh_list).pack(side="left")
-        ttk.Label(top, textvariable=self.problems_var, foreground="#D32F2F").pack(side="left", padx=12)
+        ttk.Label(top, textvariable=self.problems_var, foreground="#A44935").pack(side="left", padx=12)
         columns = ("turn", "state", "suggest", "play", "consistent", "guardrail", "result")
         self.tree = ttk.Treeview(self.tab_list, columns=columns, show="headings", height=16)
         for col, text, width in [
@@ -218,14 +237,14 @@ class GuanyiApp(tk.Tk):
         top = ttk.Frame(self.tab_report)
         top.pack(fill="x")
         ttk.Button(top, text="生成复盘报告", command=self.on_report).pack(side="left")
-        ttk.Label(top, textvariable=self.report_path_var, foreground="#2E7D32").pack(side="left", padx=12)
+        ttk.Label(top, textvariable=self.report_path_var, foreground="#49634C").pack(side="left", padx=12)
         self.report_text = tk.Text(self.tab_report, wrap="word", height=26)
         self.report_text.pack(fill="both", expand=True, pady=8)
 
     def _build_statusbar(self):
-        bar = ttk.Frame(self, padding=(10, 6))
+        bar = ttk.Frame(self, padding=(24, 8))
         bar.pack(fill="x")
-        ttk.Label(bar, textvariable=self.status_var, foreground="#37474F").pack(side="left")
+        ttk.Label(bar, textvariable=self.status_var, foreground="#767368").pack(side="left")
 
     # ---------------- 数据与动作 ----------------
     def _fail(self, exc):
@@ -419,10 +438,10 @@ class GuanyiApp(tk.Tk):
         self.qa_entry.bind("<Return>", lambda _e: self.on_ask())
         row = ttk.Frame(self.tab_qa)
         row.pack(fill="x")
-        ttk.Button(row, text="提问", command=self.on_ask).pack(side="left")
-        ttk.Label(row, textvariable=self.qa_meta_var, foreground="#2E7D32").pack(side="left", padx=12)
+        ttk.Button(row, text="提问", command=self.on_ask, style="Primary.TButton").pack(side="left")
+        ttk.Label(row, textvariable=self.qa_meta_var, foreground="#49634C").pack(side="left", padx=12)
         ttk.Label(row, text="回答只依据知识库，句末 [来源N] 可对照下方出处",
-                  foreground="#607D8B").pack(side="right")
+                  foreground="#767368").pack(side="right")
 
         body = ttk.Panedwindow(self.tab_qa, orient="vertical")
         body.pack(fill="both", expand=True, pady=(8, 0))
@@ -481,14 +500,14 @@ class GuanyiApp(tk.Tk):
         ttk.Label(top, text="任务目标：").pack(side="left")
         ttk.Entry(top, textvariable=self.agent_task_var).pack(side="left", fill="x",
                                                              expand=True, padx=6)
-        ttk.Button(top, text="运行 Agent", command=self.on_run_agent).pack(side="left")
+        ttk.Button(top, text="运行 Agent", command=self.on_run_agent, style="Primary.TButton").pack(side="left")
         ttk.Button(top, text="查看工具白名单", command=self.on_show_tools).pack(side="left", padx=4)
 
         info = ttk.Frame(self.tab_agent)
         info.pack(fill="x", pady=4)
-        ttk.Label(info, textvariable=self.agent_status_var, foreground="#2E7D32").pack(side="left")
+        ttk.Label(info, textvariable=self.agent_status_var, foreground="#49634C").pack(side="left")
         ttk.Label(info, text="写操作（写入复盘报告）执行前会弹窗确认，拒绝或超时则不执行",
-                  foreground="#607D8B").pack(side="right")
+                  foreground="#767368").pack(side="right")
 
         body = ttk.Panedwindow(self.tab_agent, orient="vertical")
         body.pack(fill="both", expand=True, pady=(6, 0))
